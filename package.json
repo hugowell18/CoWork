@@ -1,0 +1,30 @@
+{
+  "name": "cowork-ai-coord",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "面向多个 AI CLI agent 的本地文件协作协议。",
+  "scripts": {
+    "coord:status": "node tools/ai-coord/status.mjs",
+    "coord:next": "node tools/ai-coord/next-task.mjs",
+    "coord:lock": "node tools/ai-coord/lock.mjs",
+    "coord:finish": "node tools/ai-coord/finish-task.mjs",
+    "coord:spec": "node tools/ai-coord/spec-state.mjs",
+    "coord:review": "node tools/ai-coord/review-task.mjs",
+    "coord:check": "node --check tools/ai-coord/lib/core.mjs && node --check tools/ai-coord/status.mjs && node --check tools/ai-coord/next-task.mjs && node --check tools/ai-coord/lock.mjs && node --check tools/ai-coord/finish-task.mjs && node --check tools/ai-coord/spec-state.mjs && node --check tools/ai-coord/review-task.mjs",
+    "dwc:validate-contracts": "node tools/data-weight-control/validate-contracts.mjs",
+    "dwc:preflight": "node tools/data-weight-control/preflight.mjs",
+    "dwc:raw-append": "node tools/data-weight-control/raw-append.mjs",
+    "dwc:clean-partition": "node tools/data-weight-control/clean-partition.mjs",
+    "dwc:quality-dedup": "node tools/data-weight-control/quality-dedup.mjs",
+    "dwc:daily-sync": "node tools/data-weight-control/daily-sync.mjs",
+    "dwc:compaction": "node tools/data-weight-control/compaction.mjs",
+    "dwc:migration-verify": "node tools/data-weight-control/migration-verify.mjs",
+    "dwc:rollback-plan": "node tools/data-weight-control/rollback-plan.mjs",
+    "dwc:hot-layer-report": "node tools/data-weight-control/hot-layer-report.mjs",
+    "dwc:backtest-manifest": "node tools/data-weight-control/backtest-manifest.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

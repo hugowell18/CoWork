@@ -1,0 +1,30 @@
+{
+  "spec": "direct-period-duckdb-migration",
+  "phase": "execution",
+  "requirements": {
+    "status": "approved",
+    "owner": "human-owner",
+    "drafter": "codex",
+    "implementation_owner": "claude",
+    "reviewer": "codex",
+    "created_at": "2026-07-01T00:00:00.000Z",
+    "accepted_by_codex": false,
+    "approved_by_human": true,
+    "approved_at": "2026-07-01T00:00:00.000Z",
+    "notes": "New requirement requested by human owner: skip prior pilot-only process rules for a direct one-batch period migration; Claude implements, Codex verifies/reviews, human decides."
+  },
+  "execution": {
+    "status": "ready-for-claude-implementation",
+    "loop": ".kiro/agents/direct-period-duckdb-migration-loop.md",
+    "role_split": "claude implements; codex verifies/reviews; human decides",
+    "initial_target": {
+      "dataset": "daily_basic",
+      "source_table": "main.daily_basic",
+      "date_column": "trade_date",
+      "period_start": "2026-01-01",
+      "period_end_exclusive": "2027-01-01",
+      "source_duckdb": "C:/Workspace/Quanttrading/Quanttrading/data/quant.duckdb",
+      "source_open_mode": "OPEN_READONLY"
+    }
+  }
+}

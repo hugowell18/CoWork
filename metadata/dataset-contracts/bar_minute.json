@@ -1,0 +1,47 @@
+{
+  "dataset": "bar_minute",
+  "category": "market-bar",
+  "logical_key": ["ts_code", "trade_time"],
+  "date_column": "trade_date",
+  "partition": {
+    "type": "month",
+    "column": "trade_date",
+    "format": "YYYY-MM",
+    "secondary_bucket": {
+      "type": "hash",
+      "column": "ts_code",
+      "bucket_count": 16
+    }
+  },
+  "sort_order": ["ts_code", "trade_time"],
+  "dedup": {
+    "mode": "last-write-wins",
+    "order_by": ["fetch_time", "ingest_run_id"],
+    "on_unresolved_tie": "block"
+  },
+  "usable_scope": {
+    "allowed_values": ["provisional", "validated", "corrected", "rejected"],
+    "default": "provisional",
+    "clean_allowed": ["validated", "corrected"]
+  },
+  "hot_layer": {
+    "mode": "rolling-window",
+    "window_days": 90,
+    "reason": "minute bars grow quickly and should be Parquet-first with only recent hot marts"
+  },
+  "storage": {
+    "raw_path": "data/raw/bar_minute",
+    "clean_path": "data/clean/bar_minute",
+    "mart_path": "data/marts/bar_minute/window=rolling-90d"
+  },
+  "small_file": {
+    "max_files_per_month": 16,
+    "min_average_file_mb": 64
+  },
+  "strategy_risks": ["high-growth", "intraday-window"],
+  "migration": {
+    "candidate": true,
+    "candidate_reason": "first-priority high-growth Parquet candidate",
+    "requires_human_approval_to_drop": true
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "task_id": "T-data-weight-control-p2-daily-sync",
+  "spec": "data-weight-control",
+  "phase": "P2",
+  "title": "每日增量同步编排与 mart 刷新",
+  "status": "done",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [
+    "data-raw/<dataset>",
+    "data-clean/<dataset>",
+    "data-mart/<dataset>"
+  ],
+  "forbidden": [
+    "full-history-rebuild",
+    "unverified-production-query-entry-switch",
+    "drop",
+    "archive"
+  ],
+  "outputs": [
+    ".ai-coord/artifacts/data-weight-control/sync/<run-id>.json",
+    ".ai-coord/artifacts/data-weight-control/sync/<run-id>.md",
+    ".ai-coord/artifacts/data-weight-control/mart-refresh/<run-id>.json"
+  ],
+  "instructions": "严格按 raw append -> clean partition -> quality gate -> mart refresh 顺序编排每日增量同步；任一步失败都停止后续步骤。",
+  "source": ".kiro/specs/data-weight-control/tasks.md",
+  "stop_after_done": false,
+  "claimed_by": "codex",
+  "claimed_at": "2026-06-30T09:35:08.320Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-data-weight-control-p2-daily-sync.md",
+  "required_resources": [
+    "data-raw/<dataset>",
+    "data-clean/<dataset>",
+    "data-mart/<dataset>"
+  ],
+  "finished_by": "codex",
+  "finished_at": "2026-07-01T04:06:12.190Z",
+  "summary": "Addressed",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-01T04:06:12.190Z",
+  "review_status": "accepted",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-07-01T04:08:32.040Z",
+  "review_artifact": ".ai-coord/artifacts/data-weight-control/impl-review/T-data-weight-control-p2-daily-sync-r2.md"
+}

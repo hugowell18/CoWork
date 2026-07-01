@@ -1,0 +1,41 @@
+{
+  "dataset": "bar_daily",
+  "category": "market-bar",
+  "logical_key": ["ts_code", "trade_date"],
+  "date_column": "trade_date",
+  "partition": {
+    "type": "month",
+    "column": "trade_date",
+    "format": "YYYY-MM"
+  },
+  "sort_order": ["ts_code", "trade_date"],
+  "dedup": {
+    "mode": "last-write-wins",
+    "order_by": ["fetch_time", "ingest_run_id"],
+    "on_unresolved_tie": "block"
+  },
+  "usable_scope": {
+    "allowed_values": ["provisional", "validated", "corrected", "rejected"],
+    "default": "provisional",
+    "clean_allowed": ["validated", "corrected"]
+  },
+  "hot_layer": {
+    "mode": "all-history",
+    "reason": "daily bars are compact and long-lookback strategies need full history"
+  },
+  "storage": {
+    "raw_path": "data/raw/bar_daily",
+    "clean_path": "data/clean/bar_daily",
+    "mart_path": "data/marts/bar_daily/window=all-history"
+  },
+  "small_file": {
+    "max_files_per_month": 4,
+    "min_average_file_mb": 32
+  },
+  "strategy_risks": ["long-lookback", "rolling-window"],
+  "migration": {
+    "candidate": false,
+    "candidate_reason": "all-history hot access is acceptable for daily bars",
+    "requires_human_approval_to_drop": true
+  }
+}

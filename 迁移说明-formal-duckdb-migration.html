@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>正式 DuckDB 迁移 · 成果与 MacBook 切换说明</title>
+<style>
+  :root{
+    --bg:#0f1420; --panel:#161d2e; --panel2:#1c2740; --ink:#e6ecf5; --muted:#98a6bf;
+    --line:#2a3550; --accent:#4f9dff; --green:#3ecf8e; --amber:#f5b942; --red:#ff6b6b; --code:#0b1120;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.7 -apple-system,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif}
+  .wrap{max-width:1040px;margin:0 auto;padding:32px 24px 80px}
+  h1{font-size:26px;margin:0 0 4px;letter-spacing:.3px}
+  h2{font-size:20px;margin:40px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--line);color:#fff}
+  h2 .n{display:inline-block;width:28px;height:28px;line-height:28px;text-align:center;background:var(--accent);color:#04122b;border-radius:7px;font-size:15px;margin-right:10px;font-weight:700}
+  h3{font-size:16px;margin:24px 0 8px;color:#cdd8ee}
+  .sub{color:var(--muted);margin:0 0 20px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:14px 0}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:760px){.grid{grid-template-columns:1fr}}
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:600;background:var(--panel2)}
+  tr:last-child td{border-bottom:none}
+  code,pre{font-family:"SF Mono",Consolas,"Cascadia Code",monospace}
+  code{background:#223052;color:#cfe1ff;padding:1px 6px;border-radius:5px;font-size:13px}
+  pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow:auto;font-size:13px;line-height:1.6;color:#d6e3ff}
+  .pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600}
+  .ok{background:rgba(62,207,142,.15);color:var(--green);border:1px solid rgba(62,207,142,.4)}
+  .wait{background:rgba(245,185,66,.14);color:var(--amber);border:1px solid rgba(245,185,66,.4)}
+  .no{background:rgba(255,107,107,.14);color:var(--red);border:1px solid rgba(255,107,107,.4)}
+  .star{color:var(--amber)}
+  .tree{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:16px 18px;font-family:"SF Mono",Consolas,monospace;font-size:13px;line-height:1.75;color:#cdd8ee;overflow:auto;white-space:pre}
+  .k{color:var(--green)} .p{color:#8fb7ff} .c{color:var(--muted)}
+  .note{border-left:3px solid var(--accent);background:var(--panel2);padding:12px 16px;border-radius:0 8px 8px 0;margin:12px 0}
+  .warn{border-left:3px solid var(--amber);background:rgba(245,185,66,.07)}
+  .danger{border-left:3px solid var(--red);background:rgba(255,107,107,.06)}
+  ul{margin:8px 0;padding-left:22px} li{margin:4px 0}
+  .kpi{display:flex;gap:12px;flex-wrap:wrap;margin:6px 0 2px}
+  .kpi div{flex:1;min-width:150px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+  .kpi b{display:block;font-size:20px;color:#fff} .kpi span{color:var(--muted);font-size:12px}
+  .muted{color:var(--muted)}
+  .flow{font-size:13px;color:#bcd0f5;background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;line-height:1.9}
+  .flow b{color:var(--green)}
+  a{color:var(--accent)}
+  .foot{margin-top:40px;color:var(--muted);font-size:12px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>正式 DuckDB → Parquet 迁移 · 成果与 MacBook 切换说明</h1>
+  <p class="sub">spec: <code>formal-duckdb-migration</code> ｜ pilot: <b>daily_basic / 2026-05</b> ｜ 生成于 2026-07-01 ｜ 每步经 Claude 独立核验</p>
+
+  <div class="card">
+    <div class="kpi">
+      <div><b>75,018</b><span>已迁移行数 (daily_basic 2026-05)</span></div>
+      <div><b>2.8&nbsp;MB</b><span>Parquet 数据文件</span></div>
+      <div><b>逐行一致</b><span>路由视图 ⟷ 源库 双向 EXCEPT=0</span></div>
+      <div><b>只读</b><span>源库 quant.duckdb 从未改动</span></div>
+    </div>
+  </div>
+
+  <!-- 1 -->
+  <h2><span class="n">1</span>整体迁移情况</h2>
+  <p>把 <b>daily_basic</b> 数据集的 <b>2026-05 一个月</b>窗口，从源 DuckDB 正式迁移到可移植 Parquet，并<b>已切换生产查询入口</b>（切换后观察 decision = keep，稳定）。切换对上层查询<b>透明</b>：<code>SELECT ... FROM daily_basic</code> 会自动把 2026-05 路由到 Parquet、其余月份落回 DuckDB，结果与直查源库逐行完全一致。</p>
+
+  <table>
+    <tr><th>数据集</th><th>状态</th><th>说明</th></tr>
+    <tr><td><b>daily_basic / 2026-05</b></td><td><span class="pill ok">已迁移 + 已切换</span></td><td>5月走 Parquet，其余走 DuckDB；生产入口已切，可回滚</td></tr>
+    <tr><td>daily_basic 其余月份</td><td><span class="pill wait">未迁</span></td><td>仍全部走 DuckDB</td></tr>
+    <tr><td>moneyflow_daily</td><td><span class="pill wait">合格待迁</span></td><td>键匹配、契约就绪，可作下一个 pilot</td></tr>
+    <tr><td>bar_minute</td><td><span class="pill wait">需先改契约</span></td><td>契约逻辑键 <code>trade_time</code> 与源列 <code>ts</code> 不一致，需先批准契约更新</td></tr>
+    <tr><td>bar_daily</td><td><span class="pill no">不迁</span></td><td>契约定为 all-history，永久留在 DuckDB</td></tr>
+  </table>
+
+  <div class="note"><b>安全底线（全程未破）：</b>源库 <code>quant.duckdb</code>（2.6GB）始终 <code>OPEN_READONLY</code>、mtime/size 从未变动，仍是回滚权威。<b>M8（drop/archive 源表）冻结</b>——迁移只做"旁路+切入口"，绝不删源。</div>
+
+  <!-- 2 -->
+  <h2><span class="n">2</span>成果物目录结构（真实落盘）</h2>
+  <div class="tree"><span class="c"># Cowork 项目内</span>
+C:/Workspace/Cowork/
+├── data/
+│   ├── <span class="k">staging/</span>formal-duckdb-migration/daily_basic/month=2026-05/&lt;run&gt;/
+│   │   └── <span class="star">★</span> <span class="p">part-000.parquet</span>        <span class="c">2.8MB · 真实数据 75018 行</span>
+│   └── <span class="k">clean/</span>daily_basic/_versions/month=2026-05/&lt;version&gt;/
+│       └── <span class="star">★</span> <span class="p">manifest.json</span>           <span class="c">16KB · 清单(指向 parquet + 校验/血缘/质量)</span>
+│
+└── metadata/
+    ├── <span class="k">query-entry/</span><span class="star">★</span> <span class="p">daily_basic.json</span>       <span class="c">2.8KB · 路由指针(生产切换开关)</span>
+    └── <span class="k">dataset-contracts/</span><span class="star">★</span> <span class="p">daily_basic.json</span> <span class="c">1.2KB · 契约(逻辑键/分区/精度)</span>
+
+<span class="c"># Quanttrading 工程内(消费方代码)</span>
+C:/Workspace/Quanttrading/Quanttrading/server/db/
+    ├── <span class="star">★</span> <span class="p">query-entry-router.mjs</span>              <span class="c">12KB · 路由器(读指针+按窗口路由)</span>
+    └── <span class="p">duckdb-client.mjs</span>                   <span class="c">已集成路由; 无指针=旧行为(默认惰性)</span></div>
+  <p class="muted">带 <span class="star">★</span> 的 5 个文件是拷贝到 Mac 的核心。注意：<b>真实 parquet 物理在 <code>data/staging/</code></b>，而 <code>data/clean/_versions/</code> 里只有清单指过去——拷贝别漏了 staging 那份。</p>
+
+  <!-- 3 -->
+  <h2><span class="n">3</span>每层数据的用法（自底向上）</h2>
+  <table>
+    <tr><th>层</th><th>文件</th><th>用途</th><th>谁读它</th></tr>
+    <tr><td>① 数据层</td><td><code>part-000.parquet</code></td><td>真正的列式数据（75018 行）。平台无关。</td><td>DuckDB <code>read_parquet()</code></td></tr>
+    <tr><td>② 清单层</td><td><code>manifest.json</code></td><td>指向 parquet + 行数/日期/checksum/血缘/质量状态(<code>quality-passed</code>)。用于校验与追溯。</td><td>路由器解析目标文件</td></tr>
+    <tr><td>③ 路由层</td><td><code>query-entry/daily_basic.json</code></td><td><b>生产开关</b>：声明"2026-05 走 Parquet 清单、其余走源 DuckDB 回退"。存在=切换生效，删除=回退全 DuckDB。</td><td><code>query-entry-router.mjs</code></td></tr>
+    <tr><td>④ 契约层</td><td><code>dataset-contracts/daily_basic.json</code></td><td>逻辑键(ts_code,trade_date)、月分区、列/精度/空值规则。</td><td>校验 / 规范化</td></tr>
+    <tr><td>⑤ 消费层</td><td><code>query-entry-router.mjs</code> + <code>duckdb-client.mjs</code></td><td>路由器读指针→构造 UNION 查询(parquet 分支 + 源 DuckDB 分支)；集成进 client，无指针时与旧行为逐字节等价。</td><td>你的策略/查询代码</td></tr>
+  </table>
+  <div class="note"><b>核心机制：</b>③ 路由指针让 <code>daily_basic</code> 的查询自动"5月→Parquet、其余→DuckDB"，对上层<b>完全透明</b>。已用同一 DuckDB 引擎独立验证：路由视图与直查源库 <b>双向 EXCEPT = 0</b>（逐行一致），5月=75018、6月=39872 均与源匹配。</p></div>
+
+  <!-- 4 -->
+  <h2><span class="n">4</span>拷贝到 MacBook 无缝切换</h2>
+  <h3>第 1 步 · 拷这 5 个文件（<b>务必保持相对目录结构</b>）</h3>
+  <p class="muted">假设 Mac 上工程根为 <code>~/Cowork</code> 与 <code>~/Quanttrading/Quanttrading</code>：</p>
+  <pre>~/Cowork/data/staging/formal-duckdb-migration/daily_basic/month=2026-05/&lt;run&gt;/part-000.parquet
+~/Cowork/data/clean/daily_basic/_versions/month=2026-05/&lt;version&gt;/manifest.json
+~/Cowork/metadata/query-entry/daily_basic.json
+~/Cowork/metadata/dataset-contracts/daily_basic.json
+~/Quanttrading/Quanttrading/server/db/query-entry-router.mjs
+~/Quanttrading/Quanttrading/server/db/duckdb-client.mjs   # 若整个 Quanttrading 一起同步则已含</pre>
+  <div class="note warn"><b>为什么结构必须一致：</b>路由指针和清单里用的都是<b>项目相对路径</b>（已确认没内嵌 <code>C:/</code> 绝对路径），Mac 上靠运行时传入的 <code>workspaceRoot</code> 拼接解析。清单里那个 <code>absolute_path: C:/Workspace/Cowork/...</code> 只是记录信息，路由器不使用它——所以在 Mac 上不会因为盘符不同而失效。</div>
+
+  <h3>第 2 步 · Mac 上启用路由（二选一）</h3>
+  <p><b>A. 走集成好的 client（与生产一致，推荐）：</b></p>
+  <pre>const client = await openDuckDb('~/Quanttrading/Quanttrading/data/quant.duckdb', {
+  queryEntry: {
+    enabled: true,
+    pointerPath: '~/Cowork/metadata/query-entry/daily_basic.json',
+    workspaceRoot: '~/Cowork',        // ← Mac 上的 Cowork 根
+  },
+});
+const { rows } = await client.queryEntry.dailyBasic.all();  // 5月自动→parquet, 其余→duckdb</pre>
+  <p class="muted">或用环境变量：<code>QUERY_ENTRY_ROUTING=1</code> + <code>QUERY_ENTRY_DAILY_BASIC_POINTER=...</code> + <code>QUERY_ENTRY_WORKSPACE_ROOT=~/Cowork</code></p>
+
+  <p><b>B. 只看/验证数据，不接生产：</b></p>
+  <pre>-- Mac 上 DuckDB 直接查那份 parquet (75018 行)
+SELECT * FROM read_parquet('~/Cowork/data/staging/.../part-000.parquet')
+WHERE trade_date BETWEEN '2026-05-01' AND '2026-05-31';</pre>
+
+  <h3>第 3 步 · 回滚（如需）</h3>
+  <div class="note danger">删除 <code>~/Cowork/metadata/query-entry/daily_basic.json</code> → 立即回退成"全走 DuckDB"（无指针=旧行为）。源库完好，零风险。</div>
+
+  <!-- 5 -->
+  <h2><span class="n">5</span>要注意的现实</h2>
+  <ul>
+    <li><b>目前只有 2026-05 一个月在 Parquet。</b>Mac 上查 daily_basic 其它月份仍会走 <code>quant.duckdb</code>——所以那 2.6GB 源库在 Mac 上你也得有（除非只用 5 月）。要"整个 daily_basic 脱离 DuckDB"，需把所有月份都过一遍 <code>M4→M5→切换</code>。</li>
+    <li><b>parquet 在 <code>data/staging/</code></b>（不是 <code>data/clean/_versions/</code>，那里只有清单指过去）。拷贝别漏。</li>
+    <li><b>扩展</b>（更多月份 / moneyflow / bar_minute / 全量）= 新一轮 approved <code>requirement→design→tasks</code> 链，重复这条流水线；bar_minute 还需先批准契约更新。</li>
+    <li>切换/观察脚本有过 2 处 recording-path 小 bug（已靠恢复运行更正，不影响指针与数据完整性），建议后续统一清理。</li>
+  </ul>
+
+  <!-- 6 -->
+  <h2><span class="n">6</span>本次迁移全链（每步 Claude 独立核验）</h2>
+  <div class="flow">M0 <b>baseline</b>(真库只读盘点) → M1 <b>契约校准</b>(ts/trade_time 决策) → M2 <b>pilot计划</b>(选 daily_basic/2026-05) → M3 <b>回滚准备</b>
+→ M4 <b>生成 Parquet + 清单</b>(首次写盘, 源只读) → M5 <b>一致性验证 + 质量门</b>(quality-passed) → M6 <b>切换提案 + dry-run</b>
+→ M7a <b>路由证明</b> → M7b1 <b>adapter</b> → M7b2 <b>集成(默认惰性)</b> → M7b3 <b>新鲜回滚</b> → M7b4 <b>生产切换(原子)</b> → M7c <b>观察=keep</b></div>
+  <p class="muted">关键独立核验证据：① 生产指针内容 sha == 人工批准内容 sha；② 路由视图 ⟷ 源全表双向 EXCEPT=0；③ 源库 mtime/size 全程未变；④ Quanttrading 单测 7/7 通过；⑤ duckdb-client 改动经代码级 diff 证明默认路径逐字节等价 + 有备份可回滚。</p>
+
+  <div class="foot">formal-duckdb-migration · pilot daily_basic/2026-05 · 生产切换已完成并稳定 (decision=keep) · 源库只读、可回滚</div>
+</div>
+</body>
+</html>

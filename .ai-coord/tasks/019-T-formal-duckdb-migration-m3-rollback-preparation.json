@@ -1,0 +1,54 @@
+{
+  "task_id": "T-formal-duckdb-migration-m3-rollback-preparation",
+  "spec": "formal-duckdb-migration",
+  "phase": "M3",
+  "title": "M3 rollback preparation before staged target writes",
+  "status": "done",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [
+    "artifact/formal-duckdb-migration/plan",
+    "artifact/formal-duckdb-migration/rollback",
+    "query-entry/daily_basic-read",
+    "data-clean/daily_basic/month=2026-05-read"
+  ],
+  "forbidden": [
+    "source-duckdb-write",
+    "source-duckdb-ddl",
+    "source-duckdb-copy-target",
+    "target-parquet-write",
+    "data-clean-write",
+    "clean-current-pointer-write",
+    "query-entry-pointer-write",
+    "query-entry-switch",
+    "drop-source-table",
+    "archive-source-table",
+    "production-default-change",
+    ".ai-coord/tasks-bulk-create"
+  ],
+  "outputs": [
+    ".ai-coord/artifacts/formal-duckdb-migration/rollback/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/rollback/<run-id>.md"
+  ],
+  "instructions": "Use the accepted M2 pilot-plan artifact for daily_basic month=2026-05. Before any target write tasks, perform read-only checks of metadata/query-entry/daily_basic.json and data/clean/daily_basic/_current.json, recording absent when either file does not exist. Record the exact future M4 target staging path, clean version directory, manifest path, and cleanup strategy; verify all target paths resolve under C:/Workspace/Cowork and not under C:/Workspace/Quanttrading/Quanttrading. Define failure recovery boundaries for M4, M5, and M6, including M6 rollback dry-run acceptance criteria. Do not open DuckDB for writes, do not write Parquet, do not write clean manifest or _current.json, do not write or modify query-entry pointers, and do not create M4+ task files. Write rollback artifacts, then finish the task for Claude review.",
+  "source": ".kiro/specs/formal-duckdb-migration/tasks.md",
+  "stop_after_done": false,
+  "claimed_by": "codex",
+  "claimed_at": "2026-07-01T06:54:00.642Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-formal-duckdb-migration-m3-rollback-preparation.md",
+  "required_resources": [
+    "artifact/formal-duckdb-migration/plan",
+    "artifact/formal-duckdb-migration/rollback",
+    "query-entry/daily_basic-read",
+    "data-clean/daily_basic/month=2026-05-read"
+  ],
+  "finished_by": "codex",
+  "finished_at": "2026-07-01T06:55:25.414Z",
+  "summary": "M3 rollback preparation completed for daily_basic month=2026-05. Read-only checked metadata/query-entry/daily_basic.json and data/clean/daily_basic/_current.json; both are absent. Wrote rollback artifacts with M4/M5/M6 recovery boundaries and M6 rollback dry-run acceptance criteria. Verified all future M4 targets resolve under C:/Workspace/Cowork and outside C:/Workspace/Quanttrading/Quanttrading. No DuckDB opened, no Parquet/clean/query-entry pointer writes, and no M4+ task files created.",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-01T06:55:25.414Z",
+  "review_status": "accepted",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-07-01T07:17:36.756Z",
+  "review_artifact": ".ai-coord/artifacts/formal-duckdb-migration/impl-review/T-formal-duckdb-migration-m3-rollback-preparation-r1.md"
+}

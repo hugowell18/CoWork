@@ -1,0 +1,229 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "data-weight-control.dataset-contract.schema.json",
+  "title": "Data Weight Control Dataset Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "dataset",
+    "category",
+    "logical_key",
+    "date_column",
+    "partition",
+    "sort_order",
+    "dedup",
+    "usable_scope",
+    "hot_layer",
+    "storage",
+    "small_file",
+    "strategy_risks",
+    "migration"
+  ],
+  "properties": {
+    "dataset": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_]*$"
+    },
+    "category": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]*$"
+    },
+    "logical_key": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9_]*$"
+      }
+    },
+    "date_column": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_]*$"
+    },
+    "partition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "column", "format"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["month"]
+        },
+        "column": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9_]*$"
+        },
+        "format": {
+          "type": "string",
+          "enum": ["YYYY-MM"]
+        },
+        "secondary_bucket": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "column", "bucket_count"],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["hash"]
+            },
+            "column": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9_]*$"
+            },
+            "bucket_count": {
+              "type": "integer",
+              "minimum": 2
+            }
+          }
+        }
+      }
+    },
+    "sort_order": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9_]*$"
+      }
+    },
+    "dedup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "order_by", "on_unresolved_tie"],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["last-write-wins", "source-priority", "block"]
+        },
+        "order_by": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_]*$"
+          }
+        },
+        "source_priority": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_-]*$"
+          }
+        },
+        "on_unresolved_tie": {
+          "type": "string",
+          "enum": ["block"]
+        }
+      }
+    },
+    "usable_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowed_values", "default", "clean_allowed"],
+      "properties": {
+        "allowed_values": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["provisional", "validated", "corrected", "rejected"]
+          },
+          "minItems": 4,
+          "uniqueItems": true
+        },
+        "default": {
+          "type": "string",
+          "enum": ["provisional", "validated", "corrected", "rejected"]
+        },
+        "clean_allowed": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["provisional", "validated", "corrected"]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    },
+    "hot_layer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "reason"],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["all-history", "rolling-window", "external-only", "metadata-only"]
+        },
+        "window_days": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "storage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["raw_path", "clean_path"],
+      "properties": {
+        "raw_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "clean_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mart_path": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "small_file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_files_per_month", "min_average_file_mb"],
+      "properties": {
+        "max_files_per_month": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "min_average_file_mb": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "strategy_risks": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9_-]*$"
+      },
+      "uniqueItems": true
+    },
+    "migration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate", "requires_human_approval_to_drop"],
+      "properties": {
+        "candidate": {
+          "type": "boolean"
+        },
+        "candidate_reason": {
+          "type": "string"
+        },
+        "requires_human_approval_to_drop": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    }
+  }
+}

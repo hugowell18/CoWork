@@ -1,0 +1,46 @@
+{
+  "dataset": "moneyflow_daily",
+  "category": "market-flow",
+  "logical_key": ["ts_code", "trade_date"],
+  "date_column": "trade_date",
+  "partition": {
+    "type": "month",
+    "column": "trade_date",
+    "format": "YYYY-MM",
+    "secondary_bucket": {
+      "type": "hash",
+      "column": "ts_code",
+      "bucket_count": 8
+    }
+  },
+  "sort_order": ["ts_code", "trade_date"],
+  "dedup": {
+    "mode": "last-write-wins",
+    "order_by": ["fetch_time", "ingest_run_id"],
+    "on_unresolved_tie": "block"
+  },
+  "usable_scope": {
+    "allowed_values": ["provisional", "validated", "corrected", "rejected"],
+    "default": "provisional",
+    "clean_allowed": ["validated", "corrected"]
+  },
+  "hot_layer": {
+    "mode": "external-only",
+    "reason": "symbol cross-history queries require proven partition and sort pruning before hot-layer use"
+  },
+  "storage": {
+    "raw_path": "data/raw/moneyflow_daily",
+    "clean_path": "data/clean/moneyflow_daily",
+    "mart_path": "data/marts/moneyflow_daily/window=external-only"
+  },
+  "small_file": {
+    "max_files_per_month": 8,
+    "min_average_file_mb": 32
+  },
+  "strategy_risks": ["symbol-cross-history", "factor-input", "rolling-window"],
+  "migration": {
+    "candidate": true,
+    "candidate_reason": "first-priority candidate but requires pruning proof before default query entry switch",
+    "requires_human_approval_to_drop": true
+  }
+}

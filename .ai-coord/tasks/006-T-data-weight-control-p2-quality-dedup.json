@@ -1,0 +1,39 @@
+{
+  "task_id": "T-data-weight-control-p2-quality-dedup",
+  "spec": "data-weight-control",
+  "phase": "P2",
+  "title": "去重幂等与质量门",
+  "status": "done",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [
+    "data-clean/<dataset>"
+  ],
+  "forbidden": [
+    "drop",
+    "archive",
+    "production-query-entry-switch"
+  ],
+  "outputs": [
+    ".ai-coord/artifacts/data-weight-control/quality/<run-id>.json",
+    ".ai-coord/artifacts/data-weight-control/quality/<run-id>.md"
+  ],
+  "instructions": "实现清洗标准层逻辑键、去重、幂等写入和质量门报告；重复键不得静默通过。",
+  "source": ".kiro/specs/data-weight-control/tasks.md",
+  "stop_after_done": false,
+  "claimed_by": "codex",
+  "claimed_at": "2026-06-30T09:26:56.950Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-data-weight-control-p2-quality-dedup.md",
+  "required_resources": [
+    "data-clean/<dataset>"
+  ],
+  "finished_by": "codex",
+  "finished_at": "2026-06-30T09:31:52.557Z",
+  "summary": "Implemented contract-driven quality gate and deterministic dedup: structured row input, clean-eligible source enforcement, duplicate/tie/missing-key/month checks, passed-only clean candidate output, artifacts, and idempotency proof.",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-06-30T09:31:52.557Z",
+  "review_status": "accepted",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-06-30T09:34:47.523Z",
+  "review_artifact": ".ai-coord/artifacts/data-weight-control/impl-review/T-data-weight-control-p2-quality-dedup-r1.md"
+}

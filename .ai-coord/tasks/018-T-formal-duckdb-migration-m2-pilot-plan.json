@@ -1,0 +1,55 @@
+{
+  "task_id": "T-formal-duckdb-migration-m2-pilot-plan",
+  "spec": "formal-duckdb-migration",
+  "phase": "M2",
+  "title": "M2 pilot plan for first DuckDB-to-Parquet migration window",
+  "status": "done",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [
+    "duckdb",
+    "artifact/formal-duckdb-migration/inventory",
+    "artifact/formal-duckdb-migration/contract-alignment",
+    "artifact/formal-duckdb-migration/plan"
+  ],
+  "forbidden": [
+    "source-duckdb-write",
+    "source-duckdb-ddl",
+    "source-duckdb-copy-target",
+    "target-parquet-write",
+    "data-clean-write",
+    "clean-current-pointer-write",
+    "query-entry-pointer-write",
+    "query-entry-switch",
+    "metadata-dataset-contracts-write",
+    "drop-source-table",
+    "archive-source-table",
+    "production-default-change",
+    ".ai-coord/tasks-bulk-create"
+  ],
+  "outputs": [
+    ".ai-coord/artifacts/formal-duckdb-migration/plan/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/plan/<run-id>.md"
+  ],
+  "instructions": "Use the accepted M0 inventory and M1 contract-alignment artifacts plus real DuckDB OPEN_READONLY queries to choose exactly one low-risk pilot dataset/window. Default to daily_basic if still eligible. The pilot window must be a closed natural month and must not include the source table max date. Profile the chosen window read-only: row count, date range, key completeness, duplicate keys, and provenance distribution. Plan but do not write future M3+ paths: staging data/staging/formal-duckdb-migration/<dataset>/<window>/<run-id>/, clean version data/clean/<dataset>/_versions/<partition-id>/<version-id>/manifest.json, schema_version=clean-version-manifest/v1. Include future task outline for M3 rollback, M4 staged Parquet + clean manifest, M5 consistency + quality gate, and M6 switch proposal + rollback dry-run. Do not create M3+ task files. Write execution artifacts, then finish the task for Claude review.",
+  "source": ".kiro/specs/formal-duckdb-migration/tasks.md",
+  "stop_after_done": true,
+  "claimed_by": "codex",
+  "claimed_at": "2026-07-01T06:43:33.368Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-formal-duckdb-migration-m2-pilot-plan.md",
+  "required_resources": [
+    "duckdb",
+    "artifact/formal-duckdb-migration/inventory",
+    "artifact/formal-duckdb-migration/contract-alignment",
+    "artifact/formal-duckdb-migration/plan"
+  ],
+  "finished_by": "codex",
+  "finished_at": "2026-07-01T06:44:55.421Z",
+  "summary": "M2 pilot plan completed using accepted M0/M1 artifacts and real DuckDB OPEN_READONLY. Selected exactly one pilot: daily_basic month=2026-05, window 2026-05-01..2026-05-31, source max date 2026-06-29 excluded, row_count 75018, duplicate_key_count 0. Planned staging/clean manifest/query-entry paths under Cowork with schema_version=clean-version-manifest/v1. M3-M6 are outline only with create_now=false; no M3+ task files or data writes created.",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-01T06:44:55.422Z",
+  "review_status": "accepted",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-07-01T06:46:19.728Z",
+  "review_artifact": ".ai-coord/artifacts/formal-duckdb-migration/impl-review/T-formal-duckdb-migration-m2-pilot-plan-r1.md"
+}

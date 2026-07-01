@@ -1,0 +1,41 @@
+{
+  "task_id": "T-data-weight-control-p1-contracts",
+  "spec": "data-weight-control",
+  "phase": "P1",
+  "title": "数据集契约与路径规范基础",
+  "status": "done",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [],
+  "forbidden": [
+    "duckdb",
+    "data-raw/*",
+    "data-clean/*",
+    "data-migration/*"
+  ],
+  "outputs": [
+    "metadata/dataset-contracts/schema.json",
+    "metadata/dataset-contracts/bar_daily.json",
+    "metadata/dataset-contracts/bar_minute.json",
+    "metadata/dataset-contracts/daily_basic.json",
+    "metadata/dataset-contracts/moneyflow_daily.json",
+    "tools/data-weight-control/lib/project-paths.mjs",
+    ".ai-coord/artifacts/data-weight-control/execution/T-data-weight-control-p1-contracts.md"
+  ],
+  "instructions": "建立 P1/P2/P3 共用的数据集契约、路径规范和跨平台 JSON 读写基础。\n定义数据集契约 schema，覆盖 dataset、logical_key、date_column、partition、sort_order、dedup、usable_scope、hot_layer、storage、small_file、strategy_risks、migration。\n提供第一批示例契约：bar_daily、bar_minute、daily_basic、moneyflow_daily。\n路径持久化统一为项目根目录相对路径和 / 分隔符。路径解析必须拒绝绝对路径、空路径和 .. 越界。\nJSON 写入 UTF-8 无 BOM；读取容忍 UTF-8 BOM、LF 和 CRLF。\n验收：示例契约能被严格 JSON 解析；契约中不存在 Windows 盘符或 macOS 用户目录；数据集名、路径名、artifact 名称不依赖大小写差异。",
+  "source": ".kiro/specs/data-weight-control/tasks.md",
+  "stop_after_done": true,
+  "claimed_by": "codex",
+  "claimed_at": "2026-06-30T08:37:52.088Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-data-weight-control-p1-contracts.md",
+  "required_resources": [],
+  "finished_by": "codex",
+  "finished_at": "2026-06-30T08:41:16.662Z",
+  "summary": "Created dataset contract schema, four initial contracts, portable path/JSON helpers, validation script, and execution artifact.",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-06-30T08:41:16.662Z",
+  "review_status": "accepted",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-06-30T09:05:02.329Z",
+  "review_artifact": ".ai-coord/artifacts/data-weight-control/impl-review/T-data-weight-control-p1-contracts-r1.md"
+}

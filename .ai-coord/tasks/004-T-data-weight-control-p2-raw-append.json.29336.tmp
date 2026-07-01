@@ -1,0 +1,40 @@
+{
+  "task_id": "T-data-weight-control-p2-raw-append",
+  "spec": "data-weight-control",
+  "phase": "P2",
+  "title": "raw 只追加写入契约",
+  "status": "changes-requested",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [
+    "data-raw/<dataset>"
+  ],
+  "forbidden": [
+    "duckdb-write",
+    "data-clean/<dataset>",
+    "drop",
+    "archive"
+  ],
+  "outputs": [
+    "raw metadata structure",
+    "ingest artifact"
+  ],
+  "instructions": "定义 raw 层只追加写入与采集元数据记录；纠错通过新 ingest_run_id 和 correction_of/supersedes 表达，不覆盖旧批次。",
+  "source": ".kiro/specs/data-weight-control/tasks.md",
+  "stop_after_done": false,
+  "claimed_by": "codex",
+  "claimed_at": "2026-06-30T08:48:45.597Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-data-weight-control-p2-raw-append.md",
+  "required_resources": [
+    "data-raw/<dataset>"
+  ],
+  "finished_by": "codex",
+  "finished_at": "2026-06-30T08:51:11.039Z",
+  "summary": "Implemented raw ingest metadata schema and raw-append CLI with no-overwrite append semantics, correction metadata, usable_scope, and dry-run ingest artifact.",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-06-30T08:51:11.039Z",
+  "review_status": "changes-requested",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-06-30T09:11:10.969Z",
+  "review_artifact": ".ai-coord/artifacts/data-weight-control/impl-review/T-data-weight-control-p2-raw-append-r1.md"
+}

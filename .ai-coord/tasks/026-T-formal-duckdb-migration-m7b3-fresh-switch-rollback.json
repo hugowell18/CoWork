@@ -1,0 +1,56 @@
+{
+  "task_id": "T-formal-duckdb-migration-m7b3-fresh-switch-rollback",
+  "spec": "formal-duckdb-migration",
+  "phase": "M7b3",
+  "title": "M7b3 fresh switch rollback preparation",
+  "status": "done",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [
+    "query-entry/daily_basic-read",
+    "artifact/formal-duckdb-migration/consumer-integration-proof-read",
+    "artifact/formal-duckdb-migration/switch-rollback"
+  ],
+  "forbidden": [
+    "source-duckdb-write",
+    "source-duckdb-ddl",
+    "source-duckdb-copy-target",
+    "production-query-entry-pointer-write",
+    "query-entry-switch",
+    "clean-current-pointer-write",
+    "data-clean-write",
+    "target-parquet-write",
+    "drop-source-table",
+    "archive-source-table",
+    ".ai-coord/tasks-bulk-create",
+    "M7b4-production-switch"
+  ],
+  "allowed_writes": [
+    ".ai-coord/artifacts/formal-duckdb-migration/switch-rollback/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/switch-rollback/<run-id>.md"
+  ],
+  "outputs": [
+    ".ai-coord/artifacts/formal-duckdb-migration/switch-rollback/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/switch-rollback/<run-id>.md"
+  ],
+  "instructions": "Capture the exact production pointer state immediately before the future switch task and generate rollback instructions for restoring it. Read metadata/query-entry/daily_basic.json if present; record absent if absent. Validate accepted T7b1 adapter-proof and accepted T7b2 consumer-integration-proof and confirm both still point to the same quality-passed clean manifest. Build the exact new query-entry pointer content but keep it artifact-local only. Generate rollback commands for old-present and old-absent states. Prove no production pointer was modified. Do not write metadata/query-entry/daily_basic.json. Do not write data/clean/daily_basic/_current.json. Do not modify target Parquet, clean manifest, or source DuckDB. Do not create T7b4/T7c/M8 task files. Finish for Claude review. After T7b3 is accepted, stop and wait for explicit human approval before creating T7b4.",
+  "source": ".kiro/specs/formal-duckdb-migration/tasks.md plus .ai-coord/artifacts/formal-duckdb-migration/impl-review/T-formal-duckdb-migration-m7b2-consumer-integration-smoke-r1.md",
+  "stop_after_done": true,
+  "claimed_by": "codex",
+  "claimed_at": "2026-07-01T08:20:47.151Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-formal-duckdb-migration-m7b3-fresh-switch-rollback.md",
+  "required_resources": [
+    "query-entry/daily_basic-read",
+    "artifact/formal-duckdb-migration/consumer-integration-proof-read",
+    "artifact/formal-duckdb-migration/switch-rollback"
+  ],
+  "finished_by": "codex",
+  "finished_at": "2026-07-01T08:23:06.785Z",
+  "summary": "T7b3 fresh rollback artifact generated. Captured production query-entry pointer state as absent; built artifact-local query-entry/v1 candidate for daily_basic/month=2026-05 referencing the quality-passed manifest and source DuckDB OPEN_READONLY fallback; rollback commands cover old-absent and old-present states; T7b4 preconditions require Claude acceptance plus explicit human approval. No production query-entry pointer, _current, clean data, target Parquet, source DuckDB, or T7b4/T7c/M8 task files were written.",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-01T08:23:06.785Z",
+  "review_status": "accepted",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-07-01T08:23:53.650Z",
+  "review_artifact": ".ai-coord/artifacts/formal-duckdb-migration/impl-review/T-formal-duckdb-migration-m7b3-fresh-switch-rollback-r1.md"
+}

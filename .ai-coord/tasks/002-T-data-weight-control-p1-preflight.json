@@ -1,0 +1,37 @@
+{
+  "task_id": "T-data-weight-control-p1-preflight",
+  "spec": "data-weight-control",
+  "phase": "P1",
+  "title": "零风险预检报告",
+  "status": "done",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [],
+  "forbidden": [
+    "duckdb-write",
+    "query-entry-switch",
+    "drop",
+    "archive",
+    "data-migration"
+  ],
+  "outputs": [
+    ".ai-coord/artifacts/data-weight-control/preflight/<run-id>.json",
+    ".ai-coord/artifacts/data-weight-control/preflight/<run-id>.md"
+  ],
+  "instructions": "生成只读预检报告，统计表重量、迁移候选、热窗口、策略风险和 small_file 压实候选；如 duckdb 锁被他方持有，跳过 DB 连接并报告 warn/blocked。",
+  "source": ".kiro/specs/data-weight-control/tasks.md",
+  "stop_after_done": false,
+  "claimed_by": "codex",
+  "claimed_at": "2026-06-30T08:42:03.724Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-data-weight-control-p1-preflight.md",
+  "required_resources": [],
+  "finished_by": "codex",
+  "finished_at": "2026-06-30T09:09:40.822Z",
+  "summary": "Addressed implementation review A/B/C: DuckDB available branch now computes read-only table weight/date coverage/risk, report records DuckDB tool version status, and path checks list project-relative plus runtime paths.",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-06-30T09:09:40.823Z",
+  "review_status": "accepted",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-06-30T09:13:59.622Z",
+  "review_artifact": ".ai-coord/artifacts/data-weight-control/impl-review/T-data-weight-control-p1-preflight-r2.md"
+}

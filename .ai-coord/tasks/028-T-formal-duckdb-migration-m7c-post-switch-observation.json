@@ -1,0 +1,58 @@
+{
+  "task_id": "T-formal-duckdb-migration-m7c-post-switch-observation",
+  "spec": "formal-duckdb-migration",
+  "phase": "M7c",
+  "title": "M7c post-switch observation",
+  "status": "done",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [
+    "duckdb",
+    "query-entry/daily_basic-read",
+    "artifact/formal-duckdb-migration/query-entry-switch-read",
+    "artifact/formal-duckdb-migration/post-switch-observation"
+  ],
+  "forbidden": [
+    "source-duckdb-write",
+    "source-duckdb-ddl",
+    "source-duckdb-copy-target",
+    "production-query-entry-pointer-write",
+    "query-entry-switch",
+    "clean-current-pointer-write",
+    "data-clean-write",
+    "target-parquet-write",
+    "drop-source-table",
+    "archive-source-table",
+    ".ai-coord/tasks-bulk-create",
+    "M8-task-creation"
+  ],
+  "allowed_writes": [
+    ".ai-coord/artifacts/formal-duckdb-migration/post-switch-observation/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/post-switch-observation/<run-id>.md"
+  ],
+  "outputs": [
+    ".ai-coord/artifacts/formal-duckdb-migration/post-switch-observation/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/post-switch-observation/<run-id>.md"
+  ],
+  "instructions": "Observe the switched query-entry path for daily_basic/month=2026-05 and decide whether to keep, rollback, or block expansion. Read the accepted T7b4 query-entry switch artifact and the production metadata/query-entry/daily_basic.json pointer. Run routed reads for inside-window, outside-window, boundary, invalid-date, and missing-date cases using the integrated consumer in OPEN_READONLY mode. Compare pilot-window row count and date range with the accepted M5 quality gate. Confirm outside-window fallback reads source DuckDB OPEN_READONLY. Confirm the switched routed view remains transparent against source for the observed profiles. Record a clear decision: keep, rollback, or blocked. If rollback is required, do not perform it in this task unless T7b4 already performed immediate failure rollback; instead record the required separately approved rollback task. Do not expand migration scope. Do not write metadata/query-entry/daily_basic.json. Do not write data/clean/daily_basic/_current.json. Do not modify target Parquet, clean manifest, or source DuckDB. Do not create M8/drop/archive task files. Finish for Claude review.",
+  "source": ".kiro/specs/formal-duckdb-migration/tasks.md plus .ai-coord/artifacts/formal-duckdb-migration/impl-review/T-formal-duckdb-migration-m7b4-query-entry-switch-r1.md",
+  "stop_after_done": true,
+  "claimed_by": "codex",
+  "claimed_at": "2026-07-01T08:36:34.379Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-formal-duckdb-migration-m7c-post-switch-observation.md",
+  "required_resources": [
+    "duckdb",
+    "query-entry/daily_basic-read",
+    "artifact/formal-duckdb-migration/query-entry-switch-read",
+    "artifact/formal-duckdb-migration/post-switch-observation"
+  ],
+  "finished_by": "codex",
+  "finished_at": "2026-07-01T08:39:38.574Z",
+  "summary": "T7c post-switch observation completed. The first observation artifact at 08:45 failed due observation-script bugs (M5 profile comparison included extra non-null fields and full EXCEPT SQL lacked parentheses); it was superseded by the corrected 08:50 observation artifact. Corrected observation passed with decision=keep and rollback_required=false; expansion remains blocked until a separate approved requirement/design/task chain. Production pointer sha remained 193bf1db4c462e62e057cfdd58a990aba7ff04752e971daf3351bc0939b251e1 throughout. Inside pilot window matched M5/source profile and used Parquet only; outside before/after matched source and used source only; boundary used Parquet+source and matched source; full routed view row_count 5423540 matched source and bidirectional EXCEPT counts were 0/0; invalid date rejected and missing date unresolved. _current remained absent; source DuckDB, clean manifest, and target Parquet stat unchanged. No M8/drop/archive task files were created.",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-01T08:39:38.574Z",
+  "review_status": "accepted",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-07-01T08:40:35.113Z",
+  "review_artifact": ".ai-coord/artifacts/formal-duckdb-migration/impl-review/T-formal-duckdb-migration-m7c-post-switch-observation-r1.md"
+}

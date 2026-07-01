@@ -1,0 +1,63 @@
+{
+  "task_id": "T-formal-duckdb-migration-m4-staged-clean-generation",
+  "spec": "formal-duckdb-migration",
+  "phase": "M4",
+  "title": "M4 staged DuckDB-to-Parquet plus clean manifest generation",
+  "status": "done",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [
+    "duckdb",
+    "data-staging/daily_basic/month=2026-05",
+    "data-clean/daily_basic/month=2026-05",
+    "artifact/formal-duckdb-migration/staging-write",
+    "artifact/formal-duckdb-migration/rollback"
+  ],
+  "forbidden": [
+    "source-duckdb-write",
+    "source-duckdb-ddl",
+    "source-duckdb-copy-target",
+    "clean-current-pointer-write",
+    "query-entry-pointer-write",
+    "query-entry-switch",
+    "metadata-dataset-contracts-write",
+    "drop-source-table",
+    "archive-source-table",
+    "production-default-change",
+    ".ai-coord/tasks-bulk-create"
+  ],
+  "allowed_writes": [
+    "data/staging/formal-duckdb-migration/daily_basic/month=2026-05/pilot-plan-formal-duckdb-migration-2026-07-01t06-45-daily-basic-2026-05/*.parquet",
+    "data/clean/daily_basic/_versions/month=2026-05/pilot-plan-formal-duckdb-migration-2026-07-01t06-45-daily-basic-2026-05-month=2026-05/manifest.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/staging-write/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/staging-write/<run-id>.md"
+  ],
+  "outputs": [
+    ".ai-coord/artifacts/formal-duckdb-migration/staging-write/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/staging-write/<run-id>.md",
+    "data/staging/formal-duckdb-migration/daily_basic/month=2026-05/pilot-plan-formal-duckdb-migration-2026-07-01t06-45-daily-basic-2026-05/*.parquet",
+    "data/clean/daily_basic/_versions/month=2026-05/pilot-plan-formal-duckdb-migration-2026-07-01t06-45-daily-basic-2026-05-month=2026-05/manifest.json"
+  ],
+  "instructions": "Use the accepted M2 pilot-plan artifact and accepted M3 rollback artifact to execute the first staged target write for daily_basic month=2026-05 only. Open the source DuckDB at C:/Workspace/Quanttrading/Quanttrading/data/quant.duckdb with OPEN_READONLY only. Before writing, realpath/prefix-check staging path and clean manifest path: both must resolve under C:/Workspace/Cowork and must not be under C:/Workspace/Quanttrading/Quanttrading. Export only rows where trade_date >= DATE '2026-05-01' AND trade_date < DATE '2026-06-01'. Prefer DuckDB COPY (SELECT ...) TO project-local Parquet if valid with OPEN_READONLY; otherwise use an equivalent read-only source query plus target Parquet writer, or mark blocked. Generate clean-version-manifest/v1 with schema_version exactly \"clean-version-manifest/v1\" and initial status \"quality-pending\". Manifest must record source baseline artifact, contract alignment artifact, pilot plan artifact, rollback artifact, source SQL, row count, date range, schema hash/checksum, provenance columns/distribution, and target files. Do not write data/clean/daily_basic/_current.json. Do not create or modify metadata/query-entry/daily_basic.json. Do not modify metadata/dataset-contracts. Write staging artifacts, then finish the task for Claude review.",
+  "source": ".kiro/specs/formal-duckdb-migration/tasks.md",
+  "stop_after_done": false,
+  "claimed_by": "codex",
+  "claimed_at": "2026-07-01T07:19:25.456Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-formal-duckdb-migration-m4-staged-clean-generation.md",
+  "required_resources": [
+    "duckdb",
+    "data-staging/daily_basic/month=2026-05",
+    "data-clean/daily_basic/month=2026-05",
+    "artifact/formal-duckdb-migration/staging-write",
+    "artifact/formal-duckdb-migration/rollback"
+  ],
+  "finished_by": "codex",
+  "finished_at": "2026-07-01T07:23:43.021Z",
+  "summary": "M4 staged clean generation completed for daily_basic month=2026-05. Opened source C:/Workspace/Quanttrading/Quanttrading/data/quant.duckdb with node-duckdb OPEN_READONLY, exported only trade_date >= 2026-05-01 and < 2026-06-01 to project-local staging Parquet, and generated clean-version-manifest/v1 with status quality-pending. Output row_count=75018, duplicate_key_count=0, source/target ordered row checksum match, structural schema hash match, boundary checks passed. No source write/DDL, no source COPY target, no _current.json write, no query-entry pointer write, no metadata contract write, and no M5+ task files created. First attempt stopped before manifest on overly strict full DESCRIBE constraint hash; partial staging/clean dirs were cleaned within M3 rollback scope and rerun succeeded.",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-01T07:23:43.021Z",
+  "review_status": "accepted",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-07-01T07:27:45.911Z",
+  "review_artifact": ".ai-coord/artifacts/formal-duckdb-migration/impl-review/T-formal-duckdb-migration-m4-staged-clean-generation-r1.md"
+}

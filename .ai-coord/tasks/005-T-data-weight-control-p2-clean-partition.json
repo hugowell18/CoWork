@@ -1,0 +1,39 @@
+{
+  "task_id": "T-data-weight-control-p2-clean-partition",
+  "spec": "data-weight-control",
+  "phase": "P2",
+  "title": "clean 分区版本化写入",
+  "status": "done",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [
+    "data-clean/<dataset>"
+  ],
+  "forbidden": [
+    "drop",
+    "archive",
+    "production-query-entry-switch"
+  ],
+  "outputs": [
+    "clean version manifest",
+    "_current.json pointer"
+  ],
+  "instructions": "建立 clean 分区版本化写入和跨平台安全的 _current.json pointer 机制；失败保留旧 _current.json 并 blocked。",
+  "source": ".kiro/specs/data-weight-control/tasks.md",
+  "stop_after_done": false,
+  "claimed_by": "codex",
+  "claimed_at": "2026-06-30T09:17:32.638Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-data-weight-control-p2-clean-partition.md",
+  "required_resources": [
+    "data-clean/<dataset>"
+  ],
+  "finished_by": "codex",
+  "finished_at": "2026-06-30T09:23:56.161Z",
+  "summary": "Implemented clean partition version staging and _current.json publish mechanism with manifest traceability, atomic pointer update, quality-status gating, sandbox publish proof, and no main data residue.",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-06-30T09:23:56.162Z",
+  "review_status": "accepted",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-06-30T09:26:48.775Z",
+  "review_artifact": ".ai-coord/artifacts/data-weight-control/impl-review/T-data-weight-control-p2-clean-partition-r1.md"
+}

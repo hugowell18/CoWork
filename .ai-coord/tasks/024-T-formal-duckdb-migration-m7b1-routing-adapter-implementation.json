@@ -1,0 +1,69 @@
+{
+  "task_id": "T-formal-duckdb-migration-m7b1-routing-adapter-implementation",
+  "spec": "formal-duckdb-migration",
+  "phase": "M7b1",
+  "title": "M7b1 production routing adapter implementation and proof",
+  "status": "done",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [
+    "duckdb",
+    "artifact/formal-duckdb-migration/route-proof-read",
+    "artifact/formal-duckdb-migration/switch-readiness-read",
+    "data-clean/daily_basic/month=2026-05-read",
+    "query-entry/daily_basic-read",
+    "quanttrading/server-db-adapter",
+    "artifact/formal-duckdb-migration/adapter-proof"
+  ],
+  "forbidden": [
+    "source-duckdb-write",
+    "source-duckdb-ddl",
+    "source-duckdb-copy-target",
+    "production-query-entry-pointer-write",
+    "query-entry-switch",
+    "clean-current-pointer-write",
+    "data-clean-write",
+    "target-parquet-write",
+    "production-default-change",
+    "drop-source-table",
+    "archive-source-table",
+    ".ai-coord/tasks-bulk-create",
+    "M7b4-production-switch"
+  ],
+  "allowed_writes": [
+    "C:/Workspace/Quanttrading/Quanttrading/server/db/query-entry-router.mjs",
+    "C:/Workspace/Quanttrading/Quanttrading/tests/unit/query-entry-router.test.mjs",
+    ".ai-coord/artifacts/formal-duckdb-migration/adapter-proof/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/adapter-proof/<run-id>.md"
+  ],
+  "outputs": [
+    "C:/Workspace/Quanttrading/Quanttrading/server/db/query-entry-router.mjs",
+    "C:/Workspace/Quanttrading/Quanttrading/tests/unit/query-entry-router.test.mjs",
+    ".ai-coord/artifacts/formal-duckdb-migration/adapter-proof/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/adapter-proof/<run-id>.md"
+  ],
+  "instructions": "Implement the missing production-capable query-entry routing adapter for daily_basic/month=2026-05 without enabling a production pointer switch. Inspect C:/Workspace/Quanttrading/Quanttrading/server/db/duckdb-client.mjs and existing DuckDB consumers. Add a reusable adapter module near duckdb-client.mjs; do not change duckdb-client.mjs or default production behavior in this task. The adapter must support an artifact-local candidate pointer and a future production pointer path. For daily_basic, expose a routed view or query helper with canonical columns ts_code, trade_date, turnover_rate, volume_ratio, pe, pb, ps, total_mv, circ_mv, source, ingest_run_id. For 2026-05-01 <= trade_date < 2026-06-01, route to the quality-passed Parquet manifest. For dates outside that window, route to main.daily_basic in the source DuckDB connection opened OPEN_READONLY. Invalid or missing date predicates must not silently route to Parquet. Cross-window reads must be deterministic and schema-compatible; if implemented as a view, it must use main.daily_basic for source fallback to avoid recursive self-reference. Write proof artifacts showing route behavior, row counts for pilot window, outside-window fallback smoke, invalid/missing-date behavior, and zero production pointer writes. Run targeted Quanttrading tests for the adapter. Do not write metadata/query-entry/daily_basic.json. Do not write data/clean/daily_basic/_current.json. Do not modify target Parquet or the quality-passed clean manifest. Do not create T7b2/T7b3/T7b4/T7c/M8 task files. Finish for Claude review.",
+  "source": ".kiro/specs/formal-duckdb-migration/tasks.md",
+  "stop_after_done": true,
+  "claimed_by": "codex",
+  "claimed_at": "2026-07-01T08:08:38.098Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-formal-duckdb-migration-m7b1-routing-adapter-implementation.md",
+  "required_resources": [
+    "duckdb",
+    "artifact/formal-duckdb-migration/route-proof-read",
+    "artifact/formal-duckdb-migration/switch-readiness-read",
+    "data-clean/daily_basic/month=2026-05-read",
+    "query-entry/daily_basic-read",
+    "quanttrading/server-db-adapter",
+    "artifact/formal-duckdb-migration/adapter-proof"
+  ],
+  "finished_by": "codex",
+  "finished_at": "2026-07-01T08:13:12.980Z",
+  "summary": "T7b1 additive query-entry router implemented in Quanttrading without modifying duckdb-client.mjs. Targeted Vitest passed (1 file, 5 tests). Adapter-proof artifact passed using real DuckDB OPEN_READONLY: pilot window routes to quality-passed Parquet with 75018 rows, before/after outside-window ranges route to source-duckdb and match direct source profiles, cross-window route splits Parquet+source, invalid date rejected, missing date unresolved. Production query-entry pointer and _current remain absent; source DuckDB size/mtime, clean manifest, and target Parquet are unchanged. No T7b2/T7b3/T7b4/T7c/M8 task files were created.",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-01T08:13:12.980Z",
+  "review_status": "accepted",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-07-01T08:14:34.485Z",
+  "review_artifact": ".ai-coord/artifacts/formal-duckdb-migration/impl-review/T-formal-duckdb-migration-m7b1-routing-adapter-implementation-r1.md"
+}

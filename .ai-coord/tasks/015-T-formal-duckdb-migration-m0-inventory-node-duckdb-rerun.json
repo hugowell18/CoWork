@@ -1,0 +1,46 @@
+{
+  "task_id": "T-formal-duckdb-migration-m0-inventory-node-duckdb-rerun",
+  "spec": "formal-duckdb-migration",
+  "phase": "M0",
+  "title": "M0 复核：使用 Quanttrading Node DuckDB 入口只读盘点真实源 DB",
+  "status": "done",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [
+    "duckdb",
+    "data-migration/formal-inventory"
+  ],
+  "forbidden": [
+    "duckdb-write",
+    "parquet-write",
+    "data-clean-write",
+    "query-entry-switch",
+    "drop",
+    "archive",
+    "production-pointer-modification"
+  ],
+  "outputs": [
+    "tools/formal-duckdb-migration/duckdb-inventory.mjs",
+    ".ai-coord/artifacts/formal-duckdb-migration/inventory/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/inventory/<run-id>.md"
+  ],
+  "instructions": "按用户提供的 C:\\Workspace\\Quanttrading\\Quanttrading\\data\\quant.duckdb，复用 Quanttrading node_modules/duckdb 只读打开真实 DuckDB，查询候选表 schema、行数、日期范围和 duplicate key 摘要；同时检查 Cowork 与 Quanttrading data/clean 下 durable clean-version-manifest/_current provenance。不得写 DB、不得写 Parquet、不得 switch/drop/archive。完成后写 artifact 并提交 Claude review。",
+  "source": ".kiro/specs/formal-duckdb-migration/tasks.md",
+  "stop_after_done": false,
+  "claimed_by": "codex",
+  "claimed_at": "2026-07-01T05:57:55.723Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-formal-duckdb-migration-m0-inventory-node-duckdb-rerun.md",
+  "required_resources": [
+    "duckdb",
+    "data-migration/formal-inventory"
+  ],
+  "finished_by": "codex",
+  "finished_at": "2026-07-01T05:58:46.570Z",
+  "summary": "M0 rerun completed using Quanttrading node-duckdb v1.4.4 in OPEN_READONLY mode. Real source tables confirmed for bar_daily, bar_minute, daily_basic, moneyflow_daily with row counts/date ranges; readiness remains blocked due missing durable formal clean provenance, plus bar_minute contract key mismatch.",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-01T05:58:46.570Z",
+  "review_status": "accepted",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-07-01T06:01:10.135Z",
+  "review_artifact": ".ai-coord/artifacts/formal-duckdb-migration/impl-review/T-formal-duckdb-migration-m0-inventory-node-duckdb-rerun-r1.md"
+}

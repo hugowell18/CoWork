@@ -1,0 +1,40 @@
+{
+  "task_id": "T-data-weight-control-p2-compaction",
+  "spec": "data-weight-control",
+  "phase": "P2",
+  "title": "小文件压实显式流程",
+  "status": "done",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [
+    "data-clean/<dataset>"
+  ],
+  "forbidden": [
+    "drop",
+    "archive",
+    "production-query-entry-switch",
+    "silent-query-path-compaction"
+  ],
+  "outputs": [
+    ".ai-coord/artifacts/data-weight-control/compaction/<run-id>.json",
+    ".ai-coord/artifacts/data-weight-control/compaction/<run-id>.md"
+  ],
+  "instructions": "把小文件压实作为显式任务执行，只消费 P1 preflight 候选；压实后逻辑行数和主键集合不变。",
+  "source": ".kiro/specs/data-weight-control/tasks.md",
+  "stop_after_done": false,
+  "claimed_by": "codex",
+  "claimed_at": "2026-07-01T04:09:09.798Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-data-weight-control-p2-compaction.md",
+  "required_resources": [
+    "data-clean/<dataset>"
+  ],
+  "finished_by": "codex",
+  "finished_at": "2026-07-01T04:12:23.230Z",
+  "summary": "Implemented",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-01T04:12:23.230Z",
+  "review_status": "accepted",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-07-01T04:16:04.490Z",
+  "review_artifact": ".ai-coord/artifacts/data-weight-control/impl-review/T-data-weight-control-p2-compaction-r1.md"
+}

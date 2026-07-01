@@ -1,0 +1,39 @@
+{
+  "task_id": "T-data-weight-control-p3-hot-layer",
+  "spec": "data-weight-control",
+  "phase": "P3",
+  "title": "DuckDB 热层治理",
+  "status": "done",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [
+    "duckdb-if-query-verification-needed"
+  ],
+  "forbidden": [
+    "unverified-query-entry-switch",
+    "drop",
+    "archive"
+  ],
+  "outputs": [
+    ".ai-coord/artifacts/data-weight-control/hot-layer/<run-id>.json",
+    ".ai-coord/artifacts/data-weight-control/hot-layer/<run-id>.md"
+  ],
+  "instructions": "按数据集契约治理 DuckDB 热层用途，不设置全局热窗口，标记超出契约用途的迁移候选。",
+  "source": ".kiro/specs/data-weight-control/tasks.md",
+  "stop_after_done": false,
+  "claimed_by": "codex",
+  "claimed_at": "2026-07-01T04:38:59.775Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-data-weight-control-p3-hot-layer.md",
+  "required_resources": [
+    "duckdb-if-query-verification-needed"
+  ],
+  "finished_by": "codex",
+  "finished_at": "2026-07-01T04:45:41.499Z",
+  "summary": "Addressed r1 F1 by replacing dataset-name gates with contract-field driven hot layer governance for all-history, high-growth rolling windows, and symbol-cross-history pruning proof.",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-01T04:45:41.499Z",
+  "review_status": "accepted",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-07-01T04:47:02.448Z",
+  "review_artifact": ".ai-coord/artifacts/data-weight-control/impl-review/T-data-weight-control-p3-hot-layer-r2.md"
+}

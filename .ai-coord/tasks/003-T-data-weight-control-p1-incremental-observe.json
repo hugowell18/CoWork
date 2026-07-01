@@ -1,0 +1,36 @@
+{
+  "task_id": "T-data-weight-control-p1-incremental-observe",
+  "spec": "data-weight-control",
+  "phase": "P1",
+  "title": "增量同步可观测性",
+  "status": "done",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [],
+  "forbidden": [
+    "duckdb-write",
+    "data-raw-write",
+    "data-clean-write",
+    "mart-refresh",
+    "full-history-rebuild"
+  ],
+  "outputs": [
+    ".ai-coord/artifacts/data-weight-control/preflight/<run-id>.json incremental_sync section"
+  ],
+  "instructions": "只观察每日同步是否具备增量边界，识别全历史刷新、缺口、重复键和旧数据残留风险，不触发同步。",
+  "source": ".kiro/specs/data-weight-control/tasks.md",
+  "stop_after_done": false,
+  "claimed_by": "codex",
+  "claimed_at": "2026-06-30T08:45:43.890Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-data-weight-control-p1-incremental-observe.md",
+  "required_resources": [],
+  "finished_by": "codex",
+  "finished_at": "2026-06-30T08:48:14.426Z",
+  "summary": "Added incremental_sync observation to preflight artifacts without triggering sync, raw/clean writes, mart refresh, or full-history rebuild.",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-06-30T08:48:14.426Z",
+  "review_status": "accepted",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-06-30T09:09:13.038Z",
+  "review_artifact": ".ai-coord/artifacts/data-weight-control/impl-review/T-data-weight-control-p1-incremental-observe-r1.md"
+}

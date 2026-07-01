@@ -1,0 +1,63 @@
+{
+  "task_id": "T-formal-duckdb-migration-m7b4-query-entry-switch",
+  "spec": "formal-duckdb-migration",
+  "phase": "M7b4",
+  "title": "M7b4 atomic production query-entry pointer switch",
+  "status": "done",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [
+    "query-entry/daily_basic",
+    "artifact/formal-duckdb-migration/switch-rollback-read",
+    "artifact/formal-duckdb-migration/query-entry-switch"
+  ],
+  "forbidden": [
+    "source-duckdb-write",
+    "source-duckdb-ddl",
+    "source-duckdb-copy-target",
+    "clean-current-pointer-write",
+    "data-clean-write",
+    "target-parquet-write",
+    "drop-source-table",
+    "archive-source-table",
+    ".ai-coord/tasks-bulk-create",
+    "T7c-creation",
+    "M8-task-creation"
+  ],
+  "allowed_writes": [
+    "metadata/query-entry/daily_basic.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/query-entry-switch/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/query-entry-switch/<run-id>.md"
+  ],
+  "outputs": [
+    "metadata/query-entry/daily_basic.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/query-entry-switch/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/query-entry-switch/<run-id>.md"
+  ],
+  "instructions": "Atomically publish metadata/query-entry/daily_basic.json for the daily_basic/month=2026-05 pilot window after accepted T7b1, T7b2, and T7b3 plus explicit human approval for this production pointer switch. Before writing, re-read metadata/query-entry/daily_basic.json and fail if it differs from the T7b3 captured old state. Write the exact T7b3 artifact-local query-entry/v1 candidate to a temporary file in metadata/query-entry, fsync when supported, and atomically rename it to metadata/query-entry/daily_basic.json. The pointer must reference only the accepted quality-passed manifest and the source DuckDB OPEN_READONLY fallback. Immediately run a switch smoke using the integrated consumer in OPEN_READONLY mode: inside pilot window routes to Parquet, outside-window fallback matches source DuckDB, boundary behavior is correct, and invalid/missing date cases are handled. If smoke fails, restore the T7b3 old pointer state and record rollback. Do not write data/clean/daily_basic/_current.json. Do not modify target Parquet, clean manifest, or source DuckDB. Do not create T7c or M8 task files. Finish for Claude review.",
+  "source": ".kiro/specs/formal-duckdb-migration/tasks.md plus .ai-coord/artifacts/formal-duckdb-migration/impl-review/T-formal-duckdb-migration-m7b3-fresh-switch-rollback-r1.md",
+  "human_approval": {
+    "approved_by": "human-owner",
+    "approved_at": "2026-07-01T08:24:00.000Z",
+    "approval_text": "批准！",
+    "scope": "T7b4 production query-entry pointer switch only"
+  },
+  "stop_after_done": false,
+  "claimed_by": "codex",
+  "claimed_at": "2026-07-01T08:24:56.770Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-formal-duckdb-migration-m7b4-query-entry-switch.md",
+  "required_resources": [
+    "query-entry/daily_basic",
+    "artifact/formal-duckdb-migration/switch-rollback-read",
+    "artifact/formal-duckdb-migration/query-entry-switch"
+  ],
+  "finished_by": "codex",
+  "finished_at": "2026-07-01T08:29:05.209Z",
+  "summary": "T7b4 production query-entry switch executed. metadata/query-entry/daily_basic.json now exists and matches T7b3 candidate sha256 193bf1db4c462e62e057cfdd58a990aba7ff04752e971daf3351bc0939b251e1. Initial publish wrote the pointer via temp+fsync+rename but artifact recording failed due ESM require usage; recovery run did not rewrite the pointer, verified pointer sha, completed routed smoke, and recorded the recovery note. Smoke passed: inside pilot window uses Parquet and row_count 75018; outside 2026-06 fallback matches source DuckDB OPEN_READONLY row_count 39872; cross-window boundary uses Parquet+source and matches source; invalid date rejected; missing date unresolved. _current remains absent; source DuckDB, clean manifest, and target Parquet stat unchanged. Targeted Vitest query-entry-router passed 7/7. No T7c or M8 task files were created.",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-01T08:29:05.210Z",
+  "review_status": "accepted",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-07-01T08:35:49.832Z",
+  "review_artifact": ".ai-coord/artifacts/formal-duckdb-migration/impl-review/T-formal-duckdb-migration-m7b4-query-entry-switch-r1.md"
+}

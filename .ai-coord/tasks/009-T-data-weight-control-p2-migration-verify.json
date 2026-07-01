@@ -1,0 +1,41 @@
+{
+  "task_id": "T-data-weight-control-p2-migration-verify",
+  "spec": "data-weight-control",
+  "phase": "P2",
+  "title": "外部化迁移一致性验证",
+  "status": "done",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [
+    "duckdb",
+    "data-migration/<dataset>"
+  ],
+  "forbidden": [
+    "drop",
+    "archive",
+    "production-query-entry-switch"
+  ],
+  "outputs": [
+    ".ai-coord/artifacts/data-weight-control/migration-verify/<run-id>.json",
+    ".ai-coord/artifacts/data-weight-control/migration-verify/<run-id>.md"
+  ],
+  "instructions": "在任何外部化迁移或默认查询入口切换前，证明源 DuckDB 表与目标 Parquet 视图一致。",
+  "source": ".kiro/specs/data-weight-control/tasks.md",
+  "stop_after_done": false,
+  "claimed_by": "codex",
+  "claimed_at": "2026-07-01T04:16:34.086Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-data-weight-control-p2-migration-verify.md",
+  "required_resources": [
+    "duckdb",
+    "data-migration/<dataset>"
+  ],
+  "finished_by": "codex",
+  "finished_at": "2026-07-01T04:28:25.985Z",
+  "summary": "Addressed r1 F1 by blocking authoritative pass when DuckDB is unavailable, while preserving failed mismatch and missing-input blocked behavior.",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-01T04:28:25.986Z",
+  "review_status": "accepted",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-07-01T04:29:48.802Z",
+  "review_artifact": ".ai-coord/artifacts/data-weight-control/impl-review/T-data-weight-control-p2-migration-verify-r2.md"
+}

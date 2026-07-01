@@ -1,0 +1,68 @@
+{
+  "task_id": "T-formal-duckdb-migration-m7-route-adapter-proof",
+  "spec": "formal-duckdb-migration",
+  "phase": "M7a",
+  "title": "M7a route adapter proof and switch readiness report",
+  "status": "done",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [
+    "artifact/formal-duckdb-migration/switch-proposal-read",
+    "artifact/formal-duckdb-migration/rollback-dry-run-read",
+    "data-clean/daily_basic/month=2026-05-read",
+    "query-entry/daily_basic-read",
+    "artifact/formal-duckdb-migration/route-proof",
+    "artifact/formal-duckdb-migration/switch-readiness"
+  ],
+  "forbidden": [
+    "source-duckdb-write",
+    "source-duckdb-ddl",
+    "source-duckdb-copy-target",
+    "production-query-entry-pointer-write",
+    "query-entry-switch",
+    "clean-current-pointer-write",
+    "data-clean-write",
+    "target-parquet-write",
+    "drop-source-table",
+    "archive-source-table",
+    "production-default-change",
+    ".ai-coord/tasks-bulk-create",
+    "M7b-production-switch"
+  ],
+  "allowed_writes": [
+    "tools/formal-duckdb-migration/query-entry-route-proof.mjs",
+    ".ai-coord/artifacts/formal-duckdb-migration/route-proof/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/route-proof/<run-id>.md",
+    ".ai-coord/artifacts/formal-duckdb-migration/switch-readiness/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/switch-readiness/<run-id>.md"
+  ],
+  "outputs": [
+    ".ai-coord/artifacts/formal-duckdb-migration/route-proof/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/route-proof/<run-id>.md",
+    ".ai-coord/artifacts/formal-duckdb-migration/switch-readiness/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/switch-readiness/<run-id>.md"
+  ],
+  "instructions": "Read the accepted M6 switch proposal, M6 rollback dry-run, M5 quality gate, and quality-passed manifest. Read-only check whether metadata/query-entry/daily_basic.json exists. Search the project for any existing production query-entry adapter or routing consumer. Build a route-proof tool that evaluates an artifact-local candidate query-entry pointer and classifies inside-window, outside-window, boundary, invalid-date, and missing-date cases. Inside 2026-05-01 <= trade_date < 2026-06-01 must route to the quality-passed Parquet manifest; outside that window must route to source-duckdb fallback; invalid or missing dates must be rejected or unresolved. The tool may create only route-proof and readiness artifacts under .ai-coord/artifacts. If no production adapter/consumer exists, readiness must be blocked-for-production-switch even if artifact-local route proof passes. Do not write metadata/query-entry/daily_basic.json. Do not write data/clean/daily_basic/_current.json. Do not modify target Parquet or the quality-passed clean manifest. Do not create M7b/M8 task files. Write route-proof and switch-readiness artifacts, then finish for Claude review.",
+  "source": ".kiro/specs/formal-duckdb-migration/tasks.md",
+  "stop_after_done": true,
+  "claimed_by": "codex",
+  "claimed_at": "2026-07-01T07:45:14.996Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-formal-duckdb-migration-m7-route-adapter-proof.md",
+  "required_resources": [
+    "artifact/formal-duckdb-migration/switch-proposal-read",
+    "artifact/formal-duckdb-migration/rollback-dry-run-read",
+    "data-clean/daily_basic/month=2026-05-read",
+    "query-entry/daily_basic-read",
+    "artifact/formal-duckdb-migration/route-proof",
+    "artifact/formal-duckdb-migration/switch-readiness"
+  ],
+  "finished_by": "codex",
+  "finished_at": "2026-07-01T07:48:30.129Z",
+  "summary": "M7a route-proof tool and artifacts generated. Artifact-local candidate routes 2026-05 window to the quality-passed Parquet manifest, outside-window dates to source-duckdb fallback, invalid dates rejected, and missing dates unresolved. Switch readiness remains blocked-for-production-switch because no production query-entry adapter/consumer exists and production metadata/query-entry/daily_basic.json is absent. No production pointer, _current, manifest, Parquet, source DuckDB, M7b, or M8 writes were performed.",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-01T07:48:30.129Z",
+  "review_status": "accepted",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-07-01T07:50:39.043Z",
+  "review_artifact": ".ai-coord/artifacts/formal-duckdb-migration/impl-review/T-formal-duckdb-migration-m7-route-adapter-proof-r1.md"
+}

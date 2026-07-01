@@ -1,0 +1,52 @@
+{
+  "task_id": "T-formal-duckdb-migration-m0-baseline-refresh",
+  "spec": "formal-duckdb-migration",
+  "phase": "M0",
+  "title": "M0 baseline refresh using real DuckDB OPEN_READONLY baseline",
+  "status": "done",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [
+    "duckdb",
+    "artifact/formal-duckdb-migration/inventory",
+    "metadata/dataset-contracts-read"
+  ],
+  "forbidden": [
+    "source-duckdb-write",
+    "source-duckdb-ddl",
+    "source-duckdb-copy-target",
+    "target-parquet-write",
+    "data-clean-write",
+    "clean-current-pointer-write",
+    "query-entry-pointer-write",
+    "query-entry-switch",
+    "drop-source-table",
+    "archive-source-table",
+    "production-default-change",
+    ".ai-coord/tasks-bulk-create"
+  ],
+  "outputs": [
+    ".ai-coord/artifacts/formal-duckdb-migration/inventory/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/inventory/<run-id>.md"
+  ],
+  "instructions": "Refresh the real DuckDB baseline for formal-duckdb-migration using quanttrading:data/quant.duckdb observed at C:/Workspace/Quanttrading/Quanttrading/data/quant.duckdb. Open the source only with OPEN_READONLY through Quanttrading node-duckdb or an equivalent real DuckDB engine. Record driver/version, source alias/path, file size, last_write_time, table list, candidate table schema, row counts, date ranges, duplicate keys, provenance-column profiles, and old contract comparison for bar_daily, bar_minute, daily_basic, and moneyflow_daily. Under the approved DuckDB-first requirements, missing existing clean manifest must be recorded as a future M4 output, not as a migration-chain blocker. bar_minute ts/trade_time mismatch must be recorded as contract_alignment_required. Do not write source DuckDB, Parquet, clean pointers, query-entry pointers, or new task queue files. Write execution artifacts, then finish the task for Claude review.",
+  "source": ".kiro/specs/formal-duckdb-migration/tasks.md",
+  "stop_after_done": false,
+  "claimed_by": "codex",
+  "claimed_at": "2026-07-01T06:34:33.588Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-formal-duckdb-migration-m0-baseline-refresh.md",
+  "required_resources": [
+    "duckdb",
+    "artifact/formal-duckdb-migration/inventory",
+    "metadata/dataset-contracts-read"
+  ],
+  "finished_by": "codex",
+  "finished_at": "2026-07-01T06:36:42.646Z",
+  "summary": "M0 baseline refresh completed with real Quanttrading node-duckdb v1.4.4 OPEN_READONLY. Artifact status ready-for-alignment: bar_daily, daily_basic, moneyflow_daily are ready-for-alignment; bar_minute is contract-alignment-required due missing trade_time/ts mismatch. Missing clean manifest recorded as future M4 output, not M0 blocker. No source DuckDB/Parquet/clean/query-entry writes performed.",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-01T06:36:42.646Z",
+  "review_status": "accepted",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-07-01T06:38:05.355Z",
+  "review_artifact": ".ai-coord/artifacts/formal-duckdb-migration/impl-review/T-formal-duckdb-migration-m0-baseline-refresh-r1.md"
+}

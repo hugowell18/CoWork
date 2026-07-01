@@ -1,0 +1,62 @@
+{
+  "task_id": "T-formal-duckdb-migration-m7b2-consumer-integration-smoke",
+  "spec": "formal-duckdb-migration",
+  "phase": "M7b2",
+  "title": "M7b2 production consumer integration smoke and compatibility proof",
+  "status": "done",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [
+    "duckdb",
+    "quanttrading/server-db-adapter",
+    "artifact/formal-duckdb-migration/adapter-proof-read",
+    "artifact/formal-duckdb-migration/consumer-integration-proof"
+  ],
+  "forbidden": [
+    "source-duckdb-write",
+    "source-duckdb-ddl",
+    "source-duckdb-copy-target",
+    "production-query-entry-pointer-write",
+    "query-entry-switch",
+    "clean-current-pointer-write",
+    "data-clean-write",
+    "target-parquet-write",
+    "drop-source-table",
+    "archive-source-table",
+    ".ai-coord/tasks-bulk-create",
+    "M7b4-production-switch"
+  ],
+  "allowed_writes": [
+    "C:/Workspace/Quanttrading/Quanttrading/server/db/duckdb-client.mjs",
+    "C:/Workspace/Quanttrading/Quanttrading/tests/unit/query-entry-router.test.mjs",
+    ".ai-coord/artifacts/formal-duckdb-migration/consumer-integration-proof/<run-id>.duckdb-client.before.mjs",
+    ".ai-coord/artifacts/formal-duckdb-migration/consumer-integration-proof/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/consumer-integration-proof/<run-id>.md"
+  ],
+  "outputs": [
+    ".ai-coord/artifacts/formal-duckdb-migration/consumer-integration-proof/<run-id>.duckdb-client.before.mjs",
+    ".ai-coord/artifacts/formal-duckdb-migration/consumer-integration-proof/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/consumer-integration-proof/<run-id>.md"
+  ],
+  "instructions": "Prove that the Quanttrading DuckDB entry can consume query-entry routing without breaking no-pointer behavior. Before modifying C:/Workspace/Quanttrading/Quanttrading/server/db/duckdb-client.mjs, back up the exact original file under the consumer-integration-proof artifact directory and record code-level revert steps. Integrate routing inertly: default openDuckDb behavior must not import or activate query-entry routing when no explicit option/env flag is provided. Routed mode may be enabled only with an explicit option or environment flag and must support an artifact-local pointer smoke for daily_basic/month=2026-05. Run no-pointer smoke against the real C:/Workspace/Quanttrading/Quanttrading/data/quant.duckdb with OPEN_READONLY and prove row/profile equivalence against the pre-change behavior. Run artifact-local pointer smoke proving daily_basic routed reads resolve through the integrated consumer. Record affected consumers and unchanged default path. Do not write metadata/query-entry/daily_basic.json. Do not write data/clean/daily_basic/_current.json. Do not modify target Parquet, clean manifest, or source DuckDB. Do not create T7b3/T7b4/T7c/M8 task files. Finish for Claude review.",
+  "source": ".kiro/specs/formal-duckdb-migration/tasks.md plus .ai-coord/artifacts/formal-duckdb-migration/tasks-review-r6.md",
+  "stop_after_done": false,
+  "claimed_by": "codex",
+  "claimed_at": "2026-07-01T08:15:34.014Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-formal-duckdb-migration-m7b2-consumer-integration-smoke.md",
+  "required_resources": [
+    "duckdb",
+    "quanttrading/server-db-adapter",
+    "artifact/formal-duckdb-migration/adapter-proof-read",
+    "artifact/formal-duckdb-migration/consumer-integration-proof"
+  ],
+  "finished_by": "codex",
+  "finished_at": "2026-07-01T08:18:23.250Z",
+  "summary": "T7b2 integrated query-entry routing into duckdb-client.mjs inertly. Exact pre-change duckdb-client.mjs backup was written under consumer-integration-proof. Default no-pointer openDuckDb path remains without queryEntry and pre/post real DuckDB OPEN_READONLY profile+sample are identical. Explicit queryEntry.enabled mode installs dailyBasic helper and artifact-local routed smoke passes: inside pilot window routes to Parquet with 75018 rows; outside-window fallback matches direct source profile; invalid date rejected. Targeted Vitest passed (1 file, 7 tests). Production query-entry pointer and _current remain absent; source DuckDB size/mtime, clean manifest, and target Parquet are unchanged. No T7b3/T7b4/T7c/M8 task files were created.",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-01T08:18:23.250Z",
+  "review_status": "accepted",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-07-01T08:20:09.406Z",
+  "review_artifact": ".ai-coord/artifacts/formal-duckdb-migration/impl-review/T-formal-duckdb-migration-m7b2-consumer-integration-smoke-r1.md"
+}

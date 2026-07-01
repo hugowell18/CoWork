@@ -1,0 +1,55 @@
+{
+  "task_id": "T-formal-duckdb-migration-m1-contract-alignment",
+  "spec": "formal-duckdb-migration",
+  "phase": "M1",
+  "title": "M1 contract alignment from real DuckDB baseline",
+  "status": "done",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [
+    "duckdb",
+    "artifact/formal-duckdb-migration/inventory",
+    "artifact/formal-duckdb-migration/contract-alignment",
+    "metadata/dataset-contracts-read"
+  ],
+  "forbidden": [
+    "source-duckdb-write",
+    "source-duckdb-ddl",
+    "source-duckdb-copy-target",
+    "target-parquet-write",
+    "data-clean-write",
+    "clean-current-pointer-write",
+    "query-entry-pointer-write",
+    "query-entry-switch",
+    "metadata-dataset-contracts-write",
+    "drop-source-table",
+    "archive-source-table",
+    "production-default-change",
+    ".ai-coord/tasks-bulk-create"
+  ],
+  "outputs": [
+    ".ai-coord/artifacts/formal-duckdb-migration/contract-alignment/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/contract-alignment/<run-id>.md"
+  ],
+  "instructions": "Use the accepted M0 baseline-refresh inventory artifact and a real DuckDB OPEN_READONLY connection to produce contract alignment for bar_daily, bar_minute, daily_basic, and moneyflow_daily. Do not modify metadata/dataset-contracts. For each dataset, output source-to-contract mapping, canonical columns, logical key, partition key, sort key, types, numeric/date/null/checksum rules, provenance carried/profiled strategy, and alignment_status. For bar_minute, default to canonical time column ts and logical key [\"ts_code\", \"ts\"], with trade_time = ts only as an adapter/candidate-view compatibility alias; do not treat trade_time as a source fact. Mark key-matched datasets as pilot-plan-eligible when appropriate. Write execution artifacts, then finish the task for Claude review.",
+  "source": ".kiro/specs/formal-duckdb-migration/tasks.md",
+  "stop_after_done": false,
+  "claimed_by": "codex",
+  "claimed_at": "2026-07-01T06:38:59.267Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-formal-duckdb-migration-m1-contract-alignment.md",
+  "required_resources": [
+    "duckdb",
+    "artifact/formal-duckdb-migration/inventory",
+    "artifact/formal-duckdb-migration/contract-alignment",
+    "metadata/dataset-contracts-read"
+  ],
+  "finished_by": "codex",
+  "finished_at": "2026-07-01T06:41:07.154Z",
+  "summary": "M1 contract alignment completed using accepted M0 inventory and real Quanttrading node-duckdb OPEN_READONLY. Artifact status ready-for-pilot-plan. daily_basic and moneyflow_daily are pilot-plan-eligible; bar_daily is aligned but not a migration candidate per contract; bar_minute requires contract update with canonical ts and trade_time=ts adapter-only alias. No metadata contracts, source DuckDB, Parquet, clean pointer, query-entry pointer, or task bulk writes performed.",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-01T06:41:07.154Z",
+  "review_status": "accepted",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-07-01T06:42:51.779Z",
+  "review_artifact": ".ai-coord/artifacts/formal-duckdb-migration/impl-review/T-formal-duckdb-migration-m1-contract-alignment-r1.md"
+}

@@ -1,0 +1,38 @@
+{
+  "task_id": "T-data-weight-control-p2-rollback",
+  "spec": "data-weight-control",
+  "phase": "P2",
+  "title": "外部化和 drop 回滚记录",
+  "status": "done",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [
+    "data-migration/<dataset>"
+  ],
+  "forbidden": [
+    "unapproved-drop",
+    "unapproved-archive",
+    "irreversible-operation"
+  ],
+  "outputs": [
+    ".ai-coord/artifacts/data-weight-control/rollback/<run-id>.md"
+  ],
+  "instructions": "为外部化、归档和 drop 定义可回滚记录；不可逆动作必须单独人工确认。",
+  "source": ".kiro/specs/data-weight-control/tasks.md",
+  "stop_after_done": false,
+  "claimed_by": "codex",
+  "claimed_at": "2026-07-01T04:30:04.931Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-data-weight-control-p2-rollback.md",
+  "required_resources": [
+    "data-migration/<dataset>"
+  ],
+  "finished_by": "codex",
+  "finished_at": "2026-07-01T04:37:43.023Z",
+  "summary": "Addressed r1 F1 by requiring durable post-drop recovery via recorded backup or existing target Parquet partition before ready-for-human-approval.",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-01T04:37:43.023Z",
+  "review_status": "accepted",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-07-01T04:38:53.284Z",
+  "review_artifact": ".ai-coord/artifacts/data-weight-control/impl-review/T-data-weight-control-p2-rollback-r2.md"
+}

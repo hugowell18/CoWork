@@ -1,0 +1,61 @@
+{
+  "task_id": "T-formal-duckdb-migration-m6-switch-proposal-rollback-dry-run",
+  "spec": "formal-duckdb-migration",
+  "phase": "M6",
+  "title": "M6 switch proposal plus artifact-local rollback dry-run",
+  "status": "done",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [
+    "artifact/formal-duckdb-migration/switch-proposal",
+    "artifact/formal-duckdb-migration/rollback-dry-run",
+    "query-entry/daily_basic-read"
+  ],
+  "forbidden": [
+    "source-duckdb-write",
+    "source-duckdb-ddl",
+    "source-duckdb-copy-target",
+    "target-parquet-write",
+    "data-clean-write",
+    "clean-current-pointer-write",
+    "query-entry-pointer-write",
+    "query-entry-switch",
+    "drop-source-table",
+    "archive-source-table",
+    "production-default-change",
+    ".ai-coord/tasks-bulk-create"
+  ],
+  "allowed_writes": [
+    ".ai-coord/artifacts/formal-duckdb-migration/switch-proposal/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/switch-proposal/<run-id>.md",
+    ".ai-coord/artifacts/formal-duckdb-migration/rollback-dry-run/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/rollback-dry-run/<run-id>.md",
+    ".ai-coord/artifacts/formal-duckdb-migration/rollback-dry-run/<run-id>.candidate-*.json"
+  ],
+  "outputs": [
+    ".ai-coord/artifacts/formal-duckdb-migration/switch-proposal/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/switch-proposal/<run-id>.md",
+    ".ai-coord/artifacts/formal-duckdb-migration/rollback-dry-run/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/rollback-dry-run/<run-id>.md"
+  ],
+  "instructions": "Read the accepted M3 rollback artifact, accepted M5 quality gate artifact, and clean manifest whose status must be quality-passed. Generate a switch proposal for daily_basic/month=2026-05 targeting the quality-passed clean version. The switch grain is dataset/window unless existing adapter code proves deterministic mixed routing; if deterministic mixed routing cannot be proven, mark the proposal blocked for production switch or require a whole-dataset switch decision. Do not modify production metadata/query-entry/daily_basic.json. Run rollback dry-run only with artifact-local candidate pointer files under .ai-coord/artifacts/formal-duckdb-migration/rollback-dry-run, simulating old -> proposed -> old restoration. Record that old query-entry pointer is absent if absent. Proposal must state M7 production switch still needs separate human approval. Write switch proposal and rollback dry-run artifacts, then finish the task for Claude review. After M6 is accepted, stop; do not create M7.",
+  "source": ".kiro/specs/formal-duckdb-migration/tasks.md",
+  "stop_after_done": true,
+  "claimed_by": "codex",
+  "claimed_at": "2026-07-01T07:33:02.552Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-formal-duckdb-migration-m6-switch-proposal-rollback-dry-run.md",
+  "required_resources": [
+    "artifact/formal-duckdb-migration/switch-proposal",
+    "artifact/formal-duckdb-migration/rollback-dry-run",
+    "query-entry/daily_basic-read"
+  ],
+  "finished_by": "codex",
+  "finished_at": "2026-07-01T07:34:51.497Z",
+  "summary": "M6 switch proposal and rollback dry-run completed for daily_basic month=2026-05. Read accepted M3 rollback, accepted M5 quality gate, and quality-passed clean manifest. Generated switch proposal targeting the quality-passed clean version; proposal marks production switch blocked pending routing decision because no deterministic dataset/window mixed-routing adapter is proven. Ran artifact-local rollback dry-run with candidate old/new/restored pointer files, simulating absent -> proposed candidate -> absent; restored state matches old. No production metadata/query-entry/daily_basic.json write, no _current.json write, no data-clean/Parquet/source writes, and no M7+ task files created. M7 still requires separate human approval and routing decision.",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-01T07:34:51.498Z",
+  "review_status": "accepted",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-07-01T07:37:01.184Z",
+  "review_artifact": ".ai-coord/artifacts/formal-duckdb-migration/impl-review/T-formal-duckdb-migration-m6-switch-proposal-rollback-dry-run-r1.md"
+}

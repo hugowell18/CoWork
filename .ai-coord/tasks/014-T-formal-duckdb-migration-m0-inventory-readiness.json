@@ -1,0 +1,45 @@
+{
+  "task_id": "T-formal-duckdb-migration-m0-inventory-readiness",
+  "spec": "formal-duckdb-migration",
+  "phase": "M0",
+  "title": "正式迁移只读盘点和引擎就绪度",
+  "status": "done",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [
+    "duckdb",
+    "data-migration/formal-inventory"
+  ],
+  "forbidden": [
+    "duckdb-write",
+    "parquet-write",
+    "data-clean-write",
+    "query-entry-switch",
+    "drop",
+    "archive",
+    "production-pointer-modification"
+  ],
+  "outputs": [
+    ".ai-coord/artifacts/formal-duckdb-migration/inventory/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/inventory/<run-id>.md"
+  ],
+  "instructions": "只读盘点正式迁移候选，记录 DuckDB 引擎版本/可用性/连接模式/打开失败原因、真实源表可确认性、dataset contract、clean-version-manifest/v1 quality-passed provenance、锁状态和 readiness。DuckDB 不可用、命令缺失、连接失败或真实源表不可确认时，对应 dataset/window 必须 blocked；不得输出正式 passed，不得写 Parquet，不得修改 query entry，不得 drop/archive。完成后写 inventory JSON/Markdown artifact 并提交 Claude review。",
+  "source": ".kiro/specs/formal-duckdb-migration/tasks.md",
+  "stop_after_done": false,
+  "claimed_by": "codex",
+  "claimed_at": "2026-07-01T05:44:02.977Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-formal-duckdb-migration-m0-inventory-readiness.md",
+  "required_resources": [
+    "duckdb",
+    "data-migration/formal-inventory"
+  ],
+  "finished_by": "codex",
+  "finished_at": "2026-07-01T05:48:24.010Z",
+  "summary": "M0 inventory completed with blocked readiness: source DB file exists at external Quanttrading path, but DuckDB engine is unavailable in current Windows environment; no real source table or durable formal clean provenance confirmed.",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-01T05:48:24.011Z",
+  "review_status": "accepted",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-07-01T05:50:40.456Z",
+  "review_artifact": ".ai-coord/artifacts/formal-duckdb-migration/impl-review/T-formal-duckdb-migration-m0-inventory-readiness-r1.md"
+}

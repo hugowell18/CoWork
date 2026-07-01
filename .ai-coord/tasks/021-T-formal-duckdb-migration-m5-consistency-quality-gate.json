@@ -1,0 +1,63 @@
+{
+  "task_id": "T-formal-duckdb-migration-m5-consistency-quality-gate",
+  "spec": "formal-duckdb-migration",
+  "phase": "M5",
+  "title": "M5 consistency verification plus quality gate",
+  "status": "done",
+  "assignee": "codex",
+  "reviewer": "claude",
+  "requires": [
+    "duckdb",
+    "data-clean/daily_basic/month=2026-05",
+    "artifact/formal-duckdb-migration/consistency-verify",
+    "artifact/formal-duckdb-migration/quality-gate"
+  ],
+  "forbidden": [
+    "source-duckdb-write",
+    "source-duckdb-ddl",
+    "source-duckdb-copy-target",
+    "target-parquet-write",
+    "clean-current-pointer-write",
+    "query-entry-pointer-write",
+    "query-entry-switch",
+    "drop-source-table",
+    "archive-source-table",
+    "production-default-change",
+    ".ai-coord/tasks-bulk-create"
+  ],
+  "allowed_writes": [
+    ".ai-coord/artifacts/formal-duckdb-migration/consistency-verify/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/consistency-verify/<run-id>.md",
+    ".ai-coord/artifacts/formal-duckdb-migration/quality-gate/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/quality-gate/<run-id>.md",
+    "data/clean/daily_basic/_versions/month=2026-05/pilot-plan-formal-duckdb-migration-2026-07-01t06-45-daily-basic-2026-05-month=2026-05/manifest.json status/checksum/quality fields only"
+  ],
+  "outputs": [
+    ".ai-coord/artifacts/formal-duckdb-migration/consistency-verify/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/consistency-verify/<run-id>.md",
+    ".ai-coord/artifacts/formal-duckdb-migration/quality-gate/<run-id>.json",
+    ".ai-coord/artifacts/formal-duckdb-migration/quality-gate/<run-id>.md",
+    "data/clean/daily_basic/_versions/month=2026-05/pilot-plan-formal-duckdb-migration-2026-07-01t06-45-daily-basic-2026-05-month=2026-05/manifest.json"
+  ],
+  "instructions": "Use the accepted M4 staging-write artifact and existing clean manifest with status quality-pending. Use one real DuckDB engine connection opened OPEN_READONLY against source C:/Workspace/Quanttrading/Quanttrading/data/quant.duckdb, and in the same verification run query both source daily_basic and the real target Parquet via read_parquet. Verification scope is fixed to daily_basic/month=2026-05. Compare canonical structural columns only: ts_code, trade_date, turnover_rate, volume_ratio, pe, pb, ps, total_mv, circ_mv, source, ingest_run_id. Do not SELECT * because target read_parquet may expose a derived hive partition column month. Cover row count, date range, logical key set, duplicate key count, key non-null, numeric columns, null distribution, provenance distribution, order-independent checksum, and source-target EXCEPT counts. If all checks pass, atomically update the existing clean manifest status from quality-pending to quality-passed and add/update only checksum/quality fields. If any check fails, leave or set status to quality-failed/quality-pending and record failure details. Do not write _current.json. Do not create or modify metadata/query-entry/daily_basic.json. Do not write target Parquet or source DuckDB. Write consistency and quality artifacts, then finish the task for Claude review.",
+  "source": ".kiro/specs/formal-duckdb-migration/tasks.md",
+  "stop_after_done": false,
+  "claimed_by": "codex",
+  "claimed_at": "2026-07-01T07:28:24.560Z",
+  "inbox_path": ".ai-coord\\inbox\\codex\\T-formal-duckdb-migration-m5-consistency-quality-gate.md",
+  "required_resources": [
+    "duckdb",
+    "data-clean/daily_basic/month=2026-05",
+    "artifact/formal-duckdb-migration/consistency-verify",
+    "artifact/formal-duckdb-migration/quality-gate"
+  ],
+  "finished_by": "codex",
+  "finished_at": "2026-07-01T07:30:30.949Z",
+  "summary": "M5 consistency verification and quality gate completed for daily_basic month=2026-05. Used one real node-duckdb OPEN_READONLY connection to query both source daily_basic and target read_parquet canonical columns. Verified source and target row_count=75018, duplicate_key_count=0, key non-null, logical key set hash match, ordered row checksum match, null/numeric/provenance distributions match, source-minus-target=0 and target-minus-source=0. Atomically updated existing clean manifest from quality-pending to quality-passed, adding checksum/quality fields only. No source write/DDL, no target Parquet write, no _current.json write, no query-entry pointer write, and no M6+ task files created.",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-01T07:30:30.950Z",
+  "review_status": "accepted",
+  "reviewed_by": "claude",
+  "reviewed_at": "2026-07-01T07:32:04.610Z",
+  "review_artifact": ".ai-coord/artifacts/formal-duckdb-migration/impl-review/T-formal-duckdb-migration-m5-consistency-quality-gate-r1.md"
+}

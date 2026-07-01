@@ -1,0 +1,70 @@
+{
+  "task_id": "T-direct-period-duckdb-migration-daily-basic-2026-execute",
+  "spec": "direct-period-duckdb-migration",
+  "phase": "direct-period-execution",
+  "title": "Direct one-batch DuckDB-to-Parquet migration for daily_basic 2026",
+  "status": "done",
+  "assignee": "claude",
+  "reviewer": "codex",
+  "requires": [
+    "duckdb",
+    "source-duckdb/daily_basic-readonly",
+    "data-clean/daily_basic/period=2026",
+    "query-entry/daily_basic",
+    "quanttrading/query-entry-router",
+    "artifact/direct-period-duckdb-migration/execution"
+  ],
+  "forbidden": [
+    "source-duckdb-write",
+    "source-duckdb-ddl",
+    "source-duckdb-copy-target",
+    "drop-source-table",
+    "archive-source-table",
+    "source-ingestion-change",
+    "unreviewed-self-acceptance",
+    "codex-implementation"
+  ],
+  "allowed_writes": [
+    "data/staging/direct-period-duckdb-migration/daily_basic/period=2026/**",
+    "data/clean/daily_basic/_versions/period=2026/**",
+    "metadata/query-entry/daily_basic.json",
+    ".ai-coord/artifacts/direct-period-duckdb-migration/execution/**",
+    "C:/Workspace/Quanttrading/Quanttrading/server/db/query-entry-router.mjs",
+    "C:/Workspace/Quanttrading/Quanttrading/tests/unit/query-entry-router.test.mjs"
+  ],
+  "outputs": [
+    "data/staging/direct-period-duckdb-migration/daily_basic/period=2026/<run-id>/part-*.parquet",
+    "data/clean/daily_basic/_versions/period=2026/<run-id>/manifest.json",
+    "metadata/query-entry/daily_basic.json",
+    ".ai-coord/artifacts/direct-period-duckdb-migration/execution/<run-id>.json",
+    ".ai-coord/artifacts/direct-period-duckdb-migration/execution/<run-id>.md"
+  ],
+  "instructions": "Read .kiro/agents/direct-period-duckdb-migration-loop.md and .kiro/specs/direct-period-duckdb-migration/requirements.md first. Act as Claude implementation owner. Execute the daily_basic 2026 period migration in one end-to-end batch for 2026-01-01 <= trade_date < 2027-01-01. Use C:/Workspace/Quanttrading/Quanttrading/data/quant.duckdb only with OPEN_READONLY. Preserve a rollback snapshot of the current metadata/query-entry/daily_basic.json pointer before any switch. Reuse the already validated playbook from formal-duckdb-migration: inventory, contract alignment check, staged Parquet write, clean-version-manifest/v1 generation, source-vs-target verification in the same real DuckDB engine, pointer switch with temp+fsync when supported+atomic rename, routed smoke, post-switch observation, rollback if switch smoke fails. If the existing router is hardcoded to month=2026-05, generalize it safely for this period pointer and update targeted tests. The new production pointer must route the whole requested 2026 period to the new quality-passed Parquet target and route outside-period rows to source DuckDB fallback. Do not write source DuckDB, do not drop/archive, do not change ingestion. Produce complete execution JSON and MD artifacts. Finish with finish-task using --agent claude so Codex can review.",
+  "source": ".kiro/specs/direct-period-duckdb-migration/requirements.md and .kiro/agents/direct-period-duckdb-migration-loop.md",
+  "human_approval": {
+    "approved_by": "human-owner",
+    "approved_at": "2026-07-01T00:00:00.000Z",
+    "approval_text": "execute this new loop for the specified period",
+    "scope": "daily_basic 2026 direct one-batch migration"
+  },
+  "stop_after_done": true,
+  "claimed_by": "claude",
+  "claimed_at": "2026-07-01T08:59:47.640Z",
+  "inbox_path": ".ai-coord\\inbox\\claude\\T-direct-period-duckdb-migration-daily-basic-2026-execute.md",
+  "required_resources": [
+    "duckdb",
+    "source-duckdb/daily_basic-readonly",
+    "data-clean/daily_basic/period=2026",
+    "query-entry/daily_basic",
+    "quanttrading/query-entry-router",
+    "artifact/direct-period-duckdb-migration/execution"
+  ],
+  "finished_by": "claude",
+  "finished_at": "2026-07-01T09:12:38.208Z",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-01T09:12:38.209Z",
+  "review_status": "accepted",
+  "reviewed_by": "human-owner",
+  "reviewed_at": "2026-07-01T09:14:35.480Z",
+  "review_artifact": ".ai-coord/artifacts/direct-period-duckdb-migration/human-acceptance/direct-period-daily_basic-2026-20260701t090645z-human-accept.md"
+}
