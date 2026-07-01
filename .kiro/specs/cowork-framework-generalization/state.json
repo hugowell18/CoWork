@@ -1,0 +1,87 @@
+{
+  "spec": "cowork-framework-generalization",
+  "phase": "execution",
+  "requirements": {
+    "status": "approved",
+    "owner": "claude",
+    "drafter": "claude",
+    "reviewer": "human-owner",
+    "approved_by_human": true,
+    "approved_at": "2026-07-01T09:30:00.000Z",
+    "notes": "Role exception: Claude drafted requirements/design directly with the human owner via Claude Code plan-mode approval in-session, instead of the standard Codex-drafts/Claude-reviews two-step."
+  },
+  "design": {
+    "status": "approved",
+    "owner": "claude",
+    "drafter": "claude",
+    "reviewer": "human-owner",
+    "approved_by_human": true,
+    "approved_at": "2026-07-01T09:30:00.000Z",
+    "revision": 2,
+    "notes": "Revision 2 fixed a gap human owner caught in revision 1: adversarial review pools must bind distinct CLI windows/models (seats), not lens-variations of a single session."
+  },
+  "tasks": {
+    "status": "approved",
+    "owner": "claude",
+    "drafter": "claude",
+    "reviewer": "human-owner",
+    "approved_by_human": true,
+    "approved_at": "2026-07-01T09:30:00.000Z"
+  },
+  "execution": {
+    "status": "m0-m4-done-hardened-awaiting-human-acceptance",
+    "mode": "single-session-direct-implementation",
+    "queue_path": null,
+    "notes": "Claude implemented M0-M4 directly in one continuous session per requirements.md's stated execution mode; no .ai-coord/tasks queue entries created for this spec's own milestones. All changes verified additive/guard-style: npm run coord:check passes (25/25 self-tests after both review rounds' fixes), and git diff confirmed zero byte changes to every pre-existing spec, task card, and the events log at the time this work was done (that snapshot is preserved on the duckDB-migration branch after the repo was split into a generic template (main) and an archived project branch).",
+    "milestones_in_scope_this_session": ["M0", "M1", "M2", "M3", "M4"],
+    "milestones_completed": ["M0", "M1", "M2", "M3", "M4"],
+    "milestones_deferred": ["M5", "M6"],
+    "review_round_1": {
+      "verdict": "changes-requested",
+      "reviewer": "external (relayed by human owner)",
+      "findings_count": 5,
+      "findings_severity": { "high": 3, "medium": 1, "low": 1 },
+      "summary": "First independent review of the M0-M4 implementation found the enforcement was porous: pool review and human acceptance could both be bypassed via legacy code paths, v2 task cards using capability_required alone were unclaimable, self-review detection missed capability-only producers, and reviewer.md contradicted the >=2-seat rule it documented. All 5 findings confirmed valid and fixed; see review_round_1_fixes.",
+      "status": "resolved"
+    },
+    "review_round_1_fixes": [
+      "review-task.mjs and spec-state.mjs's three *-review commands now reject calls without --seat when the spec's bindings.json declares a review_pools entry for that stage, instead of silently falling through to the single-reviewer legacy path.",
+      "accept-task.mjs no longer accepts from awaiting-review (only awaiting-human-acceptance, or done-without-human_acceptance for historical backfill), and additionally verifies the underlying review actually resolved to accepted before finalizing.",
+      "next-task.mjs now resolves a v2 task's assignee via capability_required + the spec's bindings.json when no literal assignee/assigned_to/assignedTo is present, so capability-only task cards are actually claimable.",
+      "review-task.mjs's self-review check now resolves the producer via resolveTaskAssignee() (assignee fallback to bindings-resolved capability) instead of raw task.assignee; spec-state.mjs's submitPoolReview now prefers bindings.capabilities.architect over the hardcoded field.owner default for the same reason.",
+      "capabilities.json broadened architect's produces_stage to [requirements, design, tasks] so the producer-resolution fix above has a capability to resolve against for all three spec-gate stages.",
+      "reviewer.md's contradictory '1-seat pool' wording removed; clarified that a declared pool always requires >=2 seats, and that the true backward-compatible case is a stage with no review_pools declared at all."
+    ],
+    "review_round_2": {
+      "verdict": "changes-requested",
+      "reviewer": "external (relayed by human owner)",
+      "findings_count": 2,
+      "findings_severity": { "high": 1, "medium": 1 },
+      "summary": "Second independent review found that round 1's v2 task contract (resource_contract/process_contract/io_contract) was never wired into the actual execution path: findBlockingLocks/renderPrompt/next-task.mjs's claim metadata still read only legacy flat requires/forbidden/outputs, so a v2 task's declared resource lock requirement was silently invisible to lock checking (the exact place safety matters most). status.mjs also still showed capability-only v2 tasks as unassigned even though next-task.mjs could already claim them. Both confirmed valid and fixed.",
+      "status": "resolved"
+    },
+    "review_round_2_fixes": [
+      "Added taskRequiredResources()/taskForbiddenResources()/taskForbiddenBehaviors()/taskOutputs()/taskAllowedWrites()/taskRequiredInputs() to core.mjs: read v2 nested contract fields first, fall back to legacy flat fields.",
+      "findBlockingLocks() now uses taskRequiredResources() instead of raw task.requires, so a v2 task's resource_contract.requires is actually respected during lock checking -- verified end to end with a real lock.mjs claim/release cycle: a v2 task was correctly blocked while its required resource was locked, then correctly claimable after release.",
+      "renderPrompt() now reads v2 fields for requires/forbidden(resource+behavior)/outputs, and additionally renders required_inputs, allowed_writes, acceptance_criteria, and knowledge_refs when present, so a v2 task's full contract is visible in the actual inbox prompt an implementer reads.",
+      "next-task.mjs's claimed required_resources metadata now uses taskRequiredResources() instead of raw task.requires.",
+      "status.mjs now resolves a v2 task's capability-only assignee via the same bindings.json lookup next-task.mjs uses, and labels it '<agent>（按能力 <capability> 解析）' so the dashboard matches what's actually claimable, instead of showing 未分配 for tasks that are in fact assigned via capability."
+    ],
+    "human_acceptance": {
+      "status": "pending",
+      "by": null,
+      "at": null,
+      "notes": "Awaiting human owner review/acceptance of the twice-hardened M0-M4 implementation before M5 (first real new-spec adoption) is attempted."
+    }
+  },
+  "revision_history": [
+    {
+      "at": "2026-07-01T09:20:00.000Z",
+      "change": "Human owner rejected first draft's adversarial review pool design because it did not require distinct CLI windows/models. Revised bindings.json review_pools to require >=2 independent seats bound to different agents/windows before human sign-off."
+    },
+    {
+      "at": "2026-07-01T14:00:00.000Z",
+      "change": "Repository split: the original project's business-specific specs, tools, dataset metadata, and execution history were archived onto a new 'duckDB-migration' branch (via GitHub's native branch-rename, preserving that history unchanged). This branch (main) was rebuilt as a fresh orphan commit containing only the generic framework: tools/ai-coord, .kiro/roles, .kiro/steering, .ai-coord/schemas, and this meta-spec (scrubbed of business-specific examples). A new .kiro/agents/generic-loop.md was written to fill a gap noticed during the split -- the design had referenced this file throughout but it had never actually been created; the three business-specific loop files it was meant to replace were removed as part of the split."
+    }
+  ]
+}

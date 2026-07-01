@@ -1,0 +1,20 @@
+node_modules/
+.DS_Store
+
+# 本地协作运行时输出
+.ai-coord/logs/*.jsonl
+.ai-coord/inbox/**/*.md
+.ai-coord/artifacts/**
+
+# 保留协作目录
+!.ai-coord/artifacts/.gitkeep
+!.ai-coord/logs/.gitkeep
+
+# 项目本地数据目录，不上传
+data/
+
+# 本地备份
+ignored/
+
+# 杂散目录(非工程内容)
+/-/

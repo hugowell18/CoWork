@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "cowork.knowledge-manifest.schema.json",
+  "title": "Cowork Spec Knowledge Manifest",
+  "description": "Per-spec registry of reference documents searchable via tools/ai-coord/knowledge-search.mjs. Read-only grounding input; never a bypass around the review gate.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["docs"],
+  "properties": {
+    "docs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "source", "path"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^kd-[0-9]+$" },
+          "title": { "type": "string", "minLength": 1 },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "source": {
+            "type": "string",
+            "enum": ["inline", "external"],
+            "description": "inline: file lives under this spec's knowledge/ dir and is full-text indexed. external: a pointer (e.g. into a sibling repo) that may not be readable from the current OS/session; only title/tags are matched."
+          },
+          "path": { "type": "string", "minLength": 1 },
+          "added_by": { "type": "string" },
+          "added_at": { "type": "string" }
+        }
+      }
+    }
+  }
+}

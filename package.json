@@ -1,0 +1,22 @@
+{
+  "name": "cowork-ai-coord",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "面向多个 AI CLI agent 的本地文件协作协议。",
+  "scripts": {
+    "coord:status": "node tools/ai-coord/status.mjs",
+    "coord:next": "node tools/ai-coord/next-task.mjs",
+    "coord:lock": "node tools/ai-coord/lock.mjs",
+    "coord:finish": "node tools/ai-coord/finish-task.mjs",
+    "coord:spec": "node tools/ai-coord/spec-state.mjs",
+    "coord:review": "node tools/ai-coord/review-task.mjs",
+    "coord:accept": "node tools/ai-coord/accept-task.mjs",
+    "coord:knowledge": "node tools/ai-coord/knowledge-search.mjs",
+    "coord:self-test": "node tools/ai-coord/self-test.mjs",
+    "coord:check": "node --check tools/ai-coord/lib/core.mjs && node --check tools/ai-coord/status.mjs && node --check tools/ai-coord/next-task.mjs && node --check tools/ai-coord/lock.mjs && node --check tools/ai-coord/finish-task.mjs && node --check tools/ai-coord/spec-state.mjs && node --check tools/ai-coord/review-task.mjs && node --check tools/ai-coord/accept-task.mjs && node --check tools/ai-coord/knowledge-search.mjs && node --check tools/ai-coord/self-test.mjs && npm run coord:self-test"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

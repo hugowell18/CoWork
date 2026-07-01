@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "cowork.task-card.v2.schema.json",
+  "title": "Cowork Task Card v2",
+  "description": "Schema for task cards that opt in via contract_version: 2. Legacy task cards without contract_version keep their existing flat shape and are not validated against this schema.",
+  "type": "object",
+  "required": [
+    "task_id",
+    "spec",
+    "status",
+    "contract_version",
+    "capability_required",
+    "resource_contract",
+    "io_contract",
+    "acceptance_criteria"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "pattern": "^T-[a-z0-9][a-z0-9-]*$"
+    },
+    "spec": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "contract_version": {
+      "const": 2
+    },
+    "capability_required": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "claimed",
+        "blocked",
+        "changes-requested",
+        "awaiting-review",
+        "awaiting-human-acceptance",
+        "done",
+        "failed",
+        "cancelled"
+      ]
+    },
+    "resource_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requires", "forbidden"],
+      "properties": {
+        "requires": { "type": "array", "items": { "type": "string" } },
+        "forbidden": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "process_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "forbidden_behaviors": { "type": "array", "items": { "type": "string" } },
+        "requires_human_acceptance": { "type": "boolean", "default": false }
+      }
+    },
+    "io_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowed_writes", "outputs"],
+      "properties": {
+        "required_inputs": { "type": "array", "items": { "type": "string" } },
+        "allowed_writes": { "type": "array", "items": { "type": "string" } },
+        "outputs": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "description", "check_type"],
+        "properties": {
+          "id": { "type": "string" },
+          "description": { "type": "string", "minLength": 1 },
+          "check_type": { "type": "string", "enum": ["manual", "scripted"] },
+          "check_ref": { "type": "string" }
+        }
+      }
+    },
+    "knowledge_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["doc_id"],
+        "properties": {
+          "doc_id": { "type": "string" },
+          "cited": { "type": "boolean", "default": false }
+        }
+      }
+    },
+    "reviews": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/reviewRecord" }
+    },
+    "review_aggregation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "policy": { "type": "string", "enum": ["unanimous"] },
+        "status": { "type": "string", "enum": ["pending", "accepted", "changes-requested", "blocked"] }
+      }
+    },
+    "human_acceptance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": { "type": "string", "enum": ["pending", "accepted", "rejected"] },
+        "by": { "type": ["string", "null"] },
+        "at": { "type": ["string", "null"] },
+        "artifact": { "type": ["string", "null"] },
+        "notes": { "type": ["string", "null"] }
+      }
+    }
+  },
+  "definitions": {
+    "reviewRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["seat_id", "agent", "verdict", "artifact", "reviewed_at"],
+      "properties": {
+        "seat_id": { "type": "string" },
+        "agent": { "type": "string" },
+        "capability": { "type": "string", "default": "reviewer" },
+        "lens": { "type": "string" },
+        "verdict": { "type": "string", "enum": ["accepted", "changes-requested", "blocked"] },
+        "artifact": { "type": "string" },
+        "reviewed_at": { "type": "string" }
+      }
+    }
+  }
+}
