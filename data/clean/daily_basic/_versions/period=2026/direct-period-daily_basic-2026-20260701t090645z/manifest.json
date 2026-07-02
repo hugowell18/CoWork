@@ -1,0 +1,150 @@
+{
+  "schema_version": "clean-version-manifest/v1",
+  "dataset": "daily_basic",
+  "partition_id": "period=2026",
+  "partition": {
+    "type": "period",
+    "column": "trade_date",
+    "value": "2026",
+    "start": "2026-01-01",
+    "end_exclusive": "2027-01-01"
+  },
+  "version_id": "direct-period-daily_basic-2026-20260701t090645z",
+  "version_path": "data/clean/daily_basic/_versions/period=2026/direct-period-daily_basic-2026-20260701t090645z",
+  "manifest_path": "data/clean/daily_basic/_versions/period=2026/direct-period-daily_basic-2026-20260701t090645z/manifest.json",
+  "created_at": "2026-07-01T09:06:48.471Z",
+  "created_by": "claude",
+  "status": "quality-passed",
+  "spec": "direct-period-duckdb-migration",
+  "source": {
+    "db_alias": "quanttrading:data/quant.duckdb",
+    "db_observed_path": "C:/Workspace/Quanttrading/Quanttrading/data/quant.duckdb",
+    "table": "daily_basic",
+    "connection_mode": "OPEN_READONLY",
+    "duckdb_version": "v1.4.4",
+    "source_window_predicate": "trade_date >= DATE '2026-01-01' AND trade_date < DATE '2027-01-01'",
+    "db_file_size_bytes": 2605199360,
+    "db_last_write_time": "2026-06-30T06:45:29.819Z"
+  },
+  "window": {
+    "start": "2026-01-01",
+    "end": "2026-12-31",
+    "end_exclusive": "2027-01-01"
+  },
+  "row_count": 454251,
+  "expected_row_count": 454251,
+  "duplicate_key_count": 0,
+  "date_range": {
+    "from": "2026-01-05",
+    "to": "2026-06-29"
+  },
+  "contract": {
+    "contract_path": "metadata/dataset-contracts/daily_basic.json",
+    "logical_key": [
+      "ts_code",
+      "trade_date"
+    ],
+    "date_column": "trade_date",
+    "selected_columns": [
+      "ts_code",
+      "trade_date",
+      "turnover_rate",
+      "volume_ratio",
+      "pe",
+      "pb",
+      "ps",
+      "total_mv",
+      "circ_mv",
+      "source",
+      "ingest_run_id"
+    ],
+    "numeric_columns": [
+      "turnover_rate",
+      "volume_ratio",
+      "pe",
+      "pb",
+      "ps",
+      "total_mv",
+      "circ_mv"
+    ],
+    "provenance_columns": [
+      "source",
+      "ingest_run_id"
+    ]
+  },
+  "checksums": {
+    "source_ordered_row_sha256": "00fbc52446aeb9289b599aba721ec6cb",
+    "target_ordered_row_sha256": "00fbc52446aeb9289b599aba721ec6cb",
+    "parquet_file_sha256": "14f0a6072158cebefd5adaef612d6ab937bf1f04514ef2bdc96cc72cf18c6c8d"
+  },
+  "null_profile": {
+    "source": {
+      "turnover_rate": 0,
+      "volume_ratio": 45,
+      "pe": 109643,
+      "pb": 1699,
+      "ps": 337,
+      "total_mv": 0,
+      "circ_mv": 0,
+      "source": 0,
+      "ingest_run_id": 0
+    },
+    "target": {
+      "turnover_rate": 0,
+      "volume_ratio": 45,
+      "pe": 109643,
+      "pb": 1699,
+      "ps": 337,
+      "total_mv": 0,
+      "circ_mv": 0,
+      "source": 0,
+      "ingest_run_id": 0
+    }
+  },
+  "provenance": {
+    "columns": [
+      "source",
+      "ingest_run_id"
+    ],
+    "source": {
+      "source_distinct": [
+        {
+          "value": "cache:daily_basic_csv",
+          "row_count": 454251
+        }
+      ],
+      "ingest_run_id_distinct": 3
+    },
+    "target": {
+      "source_distinct": [
+        {
+          "value": "cache:daily_basic_csv",
+          "row_count": 454251
+        }
+      ],
+      "ingest_run_id_distinct": 3
+    },
+    "no_fabricated_ingest_provenance": true
+  },
+  "target_files": [
+    {
+      "path": "data/staging/direct-period-duckdb-migration/daily_basic/period=2026/direct-period-daily_basic-2026-20260701t090645z/part-000.parquet",
+      "absolute_path": "C:/Workspace/Cowork/data/staging/direct-period-duckdb-migration/daily_basic/period=2026/direct-period-daily_basic-2026-20260701t090645z/part-000.parquet",
+      "bytes": 16390594,
+      "sha256": "14f0a6072158cebefd5adaef612d6ab937bf1f04514ef2bdc96cc72cf18c6c8d",
+      "row_count": 454251
+    }
+  ],
+  "consistency_checks": {
+    "row_count_equal": true,
+    "row_count": 454251,
+    "date_range_equal": true,
+    "duplicate_keys_zero": true,
+    "source_minus_target_zero": true,
+    "target_minus_source_zero": true,
+    "ordered_row_checksum_equal": true,
+    "null_profile_equal": true,
+    "provenance_equal": true,
+    "all_passed": true
+  }
+}

@@ -1,0 +1,578 @@
+{
+  "schema_version": "clean-version-manifest/v1",
+  "dataset": "daily_basic",
+  "partition_id": "month=2026-05",
+  "partition": {
+    "type": "month",
+    "column": "trade_date",
+    "value": "2026-05"
+  },
+  "version_id": "pilot-plan-formal-duckdb-migration-2026-07-01t06-45-daily-basic-2026-05-month=2026-05",
+  "version_path": "data/clean/daily_basic/_versions/month=2026-05/pilot-plan-formal-duckdb-migration-2026-07-01t06-45-daily-basic-2026-05-month=2026-05",
+  "manifest_path": "data/clean/daily_basic/_versions/month=2026-05/pilot-plan-formal-duckdb-migration-2026-07-01t06-45-daily-basic-2026-05-month=2026-05/manifest.json",
+  "created_at": "2026-07-01T07:23:03.626Z",
+  "created_by": "codex",
+  "status": "quality-passed",
+  "source": {
+    "db_alias": "quanttrading:data/quant.duckdb",
+    "db_observed_path": "C:/Workspace/Quanttrading/Quanttrading/data/quant.duckdb",
+    "db_file_size_bytes": 2605199360,
+    "db_last_write_time": "2026-06-30T06:45:29.819Z",
+    "table": "daily_basic",
+    "connection_mode": "OPEN_READONLY",
+    "duckdb_version": "v1.4.4",
+    "source_sql": "SELECT ts_code, trade_date, turnover_rate, volume_ratio, pe, pb, ps, total_mv, circ_mv, source, ingest_run_id FROM daily_basic WHERE trade_date >= DATE '2026-05-01' AND trade_date < DATE '2026-06-01'",
+    "source_sql_ordered_for_copy": "SELECT ts_code, trade_date, turnover_rate, volume_ratio, pe, pb, ps, total_mv, circ_mv, source, ingest_run_id FROM daily_basic WHERE trade_date >= DATE '2026-05-01' AND trade_date < DATE '2026-06-01' ORDER BY ts_code, trade_date",
+    "source_window_predicate": "trade_date >= DATE '2026-05-01' AND trade_date < DATE '2026-06-01'",
+    "source_copy_statement_kind": "COPY (SELECT ...) TO project-local parquet from OPEN_READONLY connection"
+  },
+  "inputs": {
+    "baseline_artifact": ".ai-coord/artifacts/formal-duckdb-migration/inventory/inventory-formal-duckdb-migration-2026-07-01t06-35-baseline-refresh.json",
+    "contract_alignment_artifact": ".ai-coord/artifacts/formal-duckdb-migration/contract-alignment/contract-alignment-formal-duckdb-migration-2026-07-01t06-40.json",
+    "pilot_plan_artifact": ".ai-coord/artifacts/formal-duckdb-migration/plan/pilot-plan-formal-duckdb-migration-2026-07-01t06-45-daily-basic-2026-05.json",
+    "rollback_artifact": ".ai-coord/artifacts/formal-duckdb-migration/rollback/rollback-preparation-formal-duckdb-migration-2026-07-01t06-55-daily-basic-2026-05.json",
+    "tasks_revision": 4,
+    "design_revision": 4,
+    "requirements_revision": 3
+  },
+  "contract": {
+    "contract_path": "metadata/dataset-contracts/daily_basic.json",
+    "logical_key": [
+      "ts_code",
+      "trade_date"
+    ],
+    "date_column": "trade_date",
+    "selected_columns": [
+      "ts_code",
+      "trade_date",
+      "turnover_rate",
+      "volume_ratio",
+      "pe",
+      "pb",
+      "ps",
+      "total_mv",
+      "circ_mv",
+      "source",
+      "ingest_run_id"
+    ],
+    "numeric_columns": [
+      "turnover_rate",
+      "volume_ratio",
+      "pe",
+      "pb",
+      "ps",
+      "total_mv",
+      "circ_mv"
+    ],
+    "provenance_columns": [
+      "source",
+      "ingest_run_id"
+    ],
+    "normalization": {
+      "numeric": {
+        "columns": [
+          "turnover_rate",
+          "volume_ratio",
+          "pe",
+          "pb",
+          "ps",
+          "total_mv",
+          "circ_mv"
+        ],
+        "rule": "preserve DuckDB type when possible; compare DOUBLE/FLOAT with explicit normalized numeric rendering in M5, integers exact",
+        "double_checksum_rendering": "round-trip DuckDB cast to DOUBLE with null sentinel before order-independent checksum"
+      },
+      "temporal": {
+        "columns": [
+          "trade_date"
+        ],
+        "date_column": "trade_date",
+        "rule": "preserve DATE/TIMESTAMP semantics; window predicates use contract date_column; nulls remain null"
+      },
+      "nulls": {
+        "rule": "nulls are not coerced to empty strings or zero; M5 compares per-column null_count and checksum null sentinel"
+      },
+      "checksum": {
+        "rule": "order-independent checksum over logical key plus canonical non-volatile columns after type-specific normalization"
+      }
+    },
+    "source_schema_hash_from_inventory": "8a8b71735db3cf276dae6d9ccdf9c353d699a9a08c414377e14350f4977bae69",
+    "source_schema_hash_from_alignment": "8a8b71735db3cf276dae6d9ccdf9c353d699a9a08c414377e14350f4977bae69"
+  },
+  "window": {
+    "start": "2026-05-01",
+    "end": "2026-05-31",
+    "end_exclusive": "2026-06-01",
+    "excludes_source_max_date": true,
+    "source_max_date": "2026-06-29"
+  },
+  "row_count": 75018,
+  "expected_row_count": 75018,
+  "duplicate_key_count": 0,
+  "expected_duplicate_key_count": 0,
+  "date_range": {
+    "from": "2026-05-06",
+    "to": "2026-05-29"
+  },
+  "key_non_null": {
+    "ts_code": 75018,
+    "trade_date": 75018
+  },
+  "checksums": {
+    "source_ordered_row_sha256": "11bcab3d349cfbb5c0f4dc94b7b3f9c724ca0d0d905612a70e1d522d391e701d",
+    "target_ordered_row_sha256": "11bcab3d349cfbb5c0f4dc94b7b3f9c724ca0d0d905612a70e1d522d391e701d",
+    "combined_manifest_checksum": "caea9853d6ec7f13244cfd4ac135d0432b2daf842081bd65c35b648d61b90ce3",
+    "source_full_schema_hash": "6e38f2319b719dcdfb3b911fa1f09a7ff5130b31ac53e2cb6e71c1bcc8ffd70c",
+    "target_full_schema_hash": "f5acda08f883dd01ae54d710bb2ac47d865f032fa613bc282596df2090fbacd7",
+    "source_structural_schema_hash": "11ae538480f70e0d0b9ffdca5cca56c68fdf14a66c45b62b25042358d4b6b52f",
+    "target_structural_schema_hash": "11ae538480f70e0d0b9ffdca5cca56c68fdf14a66c45b62b25042358d4b6b52f",
+    "quality_gate_sha256": "f68283faa2a2dfed4dd9466877d5d9f65ac9a3055576fc911d6c71bdb9a5510f",
+    "consistency_verify_sha256": "f8d237819b1d07d3f125803bc4f3756541f5e94c87a3a0556524964d5b594eed"
+  },
+  "schema": {
+    "source": [
+      {
+        "column_name": "ts_code",
+        "column_type": "VARCHAR",
+        "null": "NO",
+        "key": "PRI",
+        "default": null,
+        "extra": null
+      },
+      {
+        "column_name": "trade_date",
+        "column_type": "DATE",
+        "null": "NO",
+        "key": "PRI",
+        "default": null,
+        "extra": null
+      },
+      {
+        "column_name": "turnover_rate",
+        "column_type": "DOUBLE",
+        "null": "YES",
+        "key": null,
+        "default": null,
+        "extra": null
+      },
+      {
+        "column_name": "volume_ratio",
+        "column_type": "DOUBLE",
+        "null": "YES",
+        "key": null,
+        "default": null,
+        "extra": null
+      },
+      {
+        "column_name": "pe",
+        "column_type": "DOUBLE",
+        "null": "YES",
+        "key": null,
+        "default": null,
+        "extra": null
+      },
+      {
+        "column_name": "pb",
+        "column_type": "DOUBLE",
+        "null": "YES",
+        "key": null,
+        "default": null,
+        "extra": null
+      },
+      {
+        "column_name": "ps",
+        "column_type": "DOUBLE",
+        "null": "YES",
+        "key": null,
+        "default": null,
+        "extra": null
+      },
+      {
+        "column_name": "total_mv",
+        "column_type": "DOUBLE",
+        "null": "YES",
+        "key": null,
+        "default": null,
+        "extra": null
+      },
+      {
+        "column_name": "circ_mv",
+        "column_type": "DOUBLE",
+        "null": "YES",
+        "key": null,
+        "default": null,
+        "extra": null
+      },
+      {
+        "column_name": "source",
+        "column_type": "VARCHAR",
+        "null": "NO",
+        "key": null,
+        "default": null,
+        "extra": null
+      },
+      {
+        "column_name": "ingest_run_id",
+        "column_type": "VARCHAR",
+        "null": "YES",
+        "key": null,
+        "default": null,
+        "extra": null
+      }
+    ],
+    "target_parquet": [
+      {
+        "column_name": "ts_code",
+        "column_type": "VARCHAR",
+        "null": "YES",
+        "key": null,
+        "default": null,
+        "extra": null
+      },
+      {
+        "column_name": "trade_date",
+        "column_type": "DATE",
+        "null": "YES",
+        "key": null,
+        "default": null,
+        "extra": null
+      },
+      {
+        "column_name": "turnover_rate",
+        "column_type": "DOUBLE",
+        "null": "YES",
+        "key": null,
+        "default": null,
+        "extra": null
+      },
+      {
+        "column_name": "volume_ratio",
+        "column_type": "DOUBLE",
+        "null": "YES",
+        "key": null,
+        "default": null,
+        "extra": null
+      },
+      {
+        "column_name": "pe",
+        "column_type": "DOUBLE",
+        "null": "YES",
+        "key": null,
+        "default": null,
+        "extra": null
+      },
+      {
+        "column_name": "pb",
+        "column_type": "DOUBLE",
+        "null": "YES",
+        "key": null,
+        "default": null,
+        "extra": null
+      },
+      {
+        "column_name": "ps",
+        "column_type": "DOUBLE",
+        "null": "YES",
+        "key": null,
+        "default": null,
+        "extra": null
+      },
+      {
+        "column_name": "total_mv",
+        "column_type": "DOUBLE",
+        "null": "YES",
+        "key": null,
+        "default": null,
+        "extra": null
+      },
+      {
+        "column_name": "circ_mv",
+        "column_type": "DOUBLE",
+        "null": "YES",
+        "key": null,
+        "default": null,
+        "extra": null
+      },
+      {
+        "column_name": "source",
+        "column_type": "VARCHAR",
+        "null": "YES",
+        "key": null,
+        "default": null,
+        "extra": null
+      },
+      {
+        "column_name": "ingest_run_id",
+        "column_type": "VARCHAR",
+        "null": "YES",
+        "key": null,
+        "default": null,
+        "extra": null
+      }
+    ],
+    "source_structural": [
+      {
+        "column_name": "ts_code",
+        "column_type": "VARCHAR"
+      },
+      {
+        "column_name": "trade_date",
+        "column_type": "DATE"
+      },
+      {
+        "column_name": "turnover_rate",
+        "column_type": "DOUBLE"
+      },
+      {
+        "column_name": "volume_ratio",
+        "column_type": "DOUBLE"
+      },
+      {
+        "column_name": "pe",
+        "column_type": "DOUBLE"
+      },
+      {
+        "column_name": "pb",
+        "column_type": "DOUBLE"
+      },
+      {
+        "column_name": "ps",
+        "column_type": "DOUBLE"
+      },
+      {
+        "column_name": "total_mv",
+        "column_type": "DOUBLE"
+      },
+      {
+        "column_name": "circ_mv",
+        "column_type": "DOUBLE"
+      },
+      {
+        "column_name": "source",
+        "column_type": "VARCHAR"
+      },
+      {
+        "column_name": "ingest_run_id",
+        "column_type": "VARCHAR"
+      }
+    ],
+    "target_structural": [
+      {
+        "column_name": "ts_code",
+        "column_type": "VARCHAR"
+      },
+      {
+        "column_name": "trade_date",
+        "column_type": "DATE"
+      },
+      {
+        "column_name": "turnover_rate",
+        "column_type": "DOUBLE"
+      },
+      {
+        "column_name": "volume_ratio",
+        "column_type": "DOUBLE"
+      },
+      {
+        "column_name": "pe",
+        "column_type": "DOUBLE"
+      },
+      {
+        "column_name": "pb",
+        "column_type": "DOUBLE"
+      },
+      {
+        "column_name": "ps",
+        "column_type": "DOUBLE"
+      },
+      {
+        "column_name": "total_mv",
+        "column_type": "DOUBLE"
+      },
+      {
+        "column_name": "circ_mv",
+        "column_type": "DOUBLE"
+      },
+      {
+        "column_name": "source",
+        "column_type": "VARCHAR"
+      },
+      {
+        "column_name": "ingest_run_id",
+        "column_type": "VARCHAR"
+      }
+    ],
+    "structural_schema_rule": "Parquet readback does not preserve DuckDB table constraints such as NOT NULL/PRI; M4 compatibility requires column name and physical type equality."
+  },
+  "null_profile": {
+    "source": [
+      {
+        "column_name": "turnover_rate",
+        "null_count": 0
+      },
+      {
+        "column_name": "volume_ratio",
+        "null_count": 0
+      },
+      {
+        "column_name": "pe",
+        "null_count": 19746
+      },
+      {
+        "column_name": "pb",
+        "null_count": 405
+      },
+      {
+        "column_name": "ps",
+        "null_count": 100
+      },
+      {
+        "column_name": "total_mv",
+        "null_count": 0
+      },
+      {
+        "column_name": "circ_mv",
+        "null_count": 0
+      },
+      {
+        "column_name": "source",
+        "null_count": 0
+      },
+      {
+        "column_name": "ingest_run_id",
+        "null_count": 0
+      }
+    ],
+    "target": [
+      {
+        "column_name": "turnover_rate",
+        "null_count": 0
+      },
+      {
+        "column_name": "volume_ratio",
+        "null_count": 0
+      },
+      {
+        "column_name": "pe",
+        "null_count": 19746
+      },
+      {
+        "column_name": "pb",
+        "null_count": 405
+      },
+      {
+        "column_name": "ps",
+        "null_count": 100
+      },
+      {
+        "column_name": "total_mv",
+        "null_count": 0
+      },
+      {
+        "column_name": "circ_mv",
+        "null_count": 0
+      },
+      {
+        "column_name": "source",
+        "null_count": 0
+      },
+      {
+        "column_name": "ingest_run_id",
+        "null_count": 0
+      }
+    ]
+  },
+  "provenance": {
+    "columns": [
+      "source",
+      "ingest_run_id"
+    ],
+    "source_distribution": {
+      "source": [
+        {
+          "value": "cache:daily_basic_csv",
+          "row_count": 75018
+        }
+      ],
+      "ingest_run_id": [
+        {
+          "value": "sync-daily_basic-20260531093317233-910c08b8",
+          "row_count": 44109
+        },
+        {
+          "value": "sync-daily_basic-20260615141543947-26d1a541",
+          "row_count": 30909
+        }
+      ]
+    },
+    "target_distribution": {
+      "source": [
+        {
+          "value": "cache:daily_basic_csv",
+          "row_count": 75018
+        }
+      ],
+      "ingest_run_id": [
+        {
+          "value": "sync-daily_basic-20260531093317233-910c08b8",
+          "row_count": 44109
+        },
+        {
+          "value": "sync-daily_basic-20260615141543947-26d1a541",
+          "row_count": 30909
+        }
+      ]
+    },
+    "non_null_source": 75018,
+    "non_null_ingest_run_id": 75018,
+    "approx_distinct_ingest_run_id": 2,
+    "no_fabricated_ingest_provenance": true
+  },
+  "target_files": [
+    {
+      "path": "data/staging/formal-duckdb-migration/daily_basic/month=2026-05/pilot-plan-formal-duckdb-migration-2026-07-01t06-45-daily-basic-2026-05/part-000.parquet",
+      "absolute_path": "C:/Workspace/Cowork/data/staging/formal-duckdb-migration/daily_basic/month=2026-05/pilot-plan-formal-duckdb-migration-2026-07-01t06-45-daily-basic-2026-05/part-000.parquet",
+      "bytes": 2865909,
+      "sha256": "343f7588fd7a701c0d6fbc7d0eeb6a56d5bdcc8c08d0846a4166b0c123da3d14",
+      "row_count": 75018
+    }
+  ],
+  "m5_ready": {
+    "status": "ready-for-consistency-verification",
+    "required_engine": "same real DuckDB engine reads source daily_basic and target read_parquet in one verification run"
+  },
+  "forbidden_write_statement": {
+    "source_duckdb_opened": true,
+    "source_duckdb_connection_mode": "OPEN_READONLY",
+    "source_duckdb_write": false,
+    "source_duckdb_ddl": false,
+    "source_duckdb_copy_target": false,
+    "clean_current_pointer_write": false,
+    "query_entry_pointer_write": false,
+    "query_entry_switch": false,
+    "metadata_dataset_contracts_write": false,
+    "created_m5_or_later_tasks": false
+  },
+  "quality": {
+    "status": "quality-passed",
+    "verified_at": "2026-07-01T07:30:08.216Z",
+    "consistency_artifact": ".ai-coord/artifacts/formal-duckdb-migration/consistency-verify/quality-gate-formal-duckdb-migration-2026-07-01t07-30-daily-basic-2026-05.json",
+    "quality_artifact": ".ai-coord/artifacts/formal-duckdb-migration/quality-gate/quality-gate-formal-duckdb-migration-2026-07-01t07-30-daily-basic-2026-05.json",
+    "consistency_sha256": "f8d237819b1d07d3f125803bc4f3756541f5e94c87a3a0556524964d5b594eed",
+    "quality_sha256": "f68283faa2a2dfed4dd9466877d5d9f65ac9a3055576fc911d6c71bdb9a5510f",
+    "checks": {
+      "row_count_equal": true,
+      "date_range_equal": true,
+      "key_non_null": true,
+      "duplicate_keys_zero": true,
+      "logical_key_set_equal": true,
+      "ordered_row_checksum_equal": true,
+      "source_minus_target_zero": true,
+      "target_minus_source_zero": true,
+      "null_distribution_equal": true,
+      "numeric_profile_equal": true,
+      "provenance_distribution_equal": true,
+      "all_passed": true
+    }
+  }
+}

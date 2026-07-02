@@ -1,0 +1,69 @@
+{
+  "task_id": "T-direct-period-duckdb-migration-daily-basic-refresh-02",
+  "spec": "direct-period-duckdb-migration",
+  "phase": "direct-period-execution",
+  "title": "Refresh daily_basic period=2021-2026 Parquet snapshot to close freshness drift",
+  "status": "done",
+  "assignee": "claude",
+  "reviewer": "codex",
+  "requires": [
+    "duckdb",
+    "source-duckdb/daily_basic-readonly",
+    "data-clean/daily_basic/period=2021-2026",
+    "query-entry/daily_basic",
+    "quanttrading/query-entry-router",
+    "artifact/direct-period-duckdb-migration/execution"
+  ],
+  "forbidden": [
+    "source-duckdb-write",
+    "source-duckdb-ddl",
+    "source-duckdb-copy-target",
+    "drop-source-table",
+    "archive-source-table",
+    "source-ingestion-change",
+    "unreviewed-self-acceptance",
+    "codex-implementation"
+  ],
+  "allowed_writes": [
+    "data/staging/direct-period-duckdb-migration/daily_basic/period=2021-2026/**",
+    "data/clean/daily_basic/_versions/period=2021-2026/**",
+    "metadata/query-entry/daily_basic.json",
+    ".ai-coord/artifacts/direct-period-duckdb-migration/execution/**"
+  ],
+  "outputs": [
+    "data/staging/direct-period-duckdb-migration/daily_basic/period=2021-2026/<run-id>/part-*.parquet",
+    "data/clean/daily_basic/_versions/period=2021-2026/<run-id>/manifest.json",
+    "metadata/query-entry/daily_basic.json",
+    ".ai-coord/artifacts/direct-period-duckdb-migration/execution/<run-id>.json",
+    ".ai-coord/artifacts/direct-period-duckdb-migration/execution/<run-id>.md"
+  ],
+  "instructions": "Read .kiro/agents/direct-period-duckdb-migration-loop.md and .kiro/specs/direct-period-duckdb-migration/requirements.md first. This is a refresh re-run of the already-approved daily_basic full-history target (2021-01-01 <= trade_date < 2027-01-01), same dataset/period as task T-direct-period-duckdb-migration-daily-basic-2021-2024-execute -- not scope expansion. That prior run's Parquet snapshot has drifted stale: independent verification during the bar_daily task found routed vs source full-view counts diverging (routedFull=5480212 vs srcFull=5480967 at last check), concentrated in ongoing source-side data corrections/backfill for already-recorded historical dates (not just the tail -- most-recent-10-day counts still matched exactly at that time). Re-run the full playbook against the live source DuckDB (OPEN_READONLY only): inventory the full 2021-01-01..2027-01-01 window fresh, rollback snapshot of the current production pointer, staged Parquet write with a new run-id, clean-version-manifest/v1, source-vs-target consistency verification (row count, date range, dup keys, bidirectional EXCEPT, ordered checksum, null profile, provenance), atomic pointer publish, routed smoke, AND freshness smoke for the most recent trade dates. Roll back if any check fails. Do not touch bar_daily's pointer or files. Do not write source DuckDB, drop/archive, or change ingestion. Produce a complete execution artifact, then finish with finish-task using --agent claude so Codex can independently review. Coordination rule: check .ai-coord/tasks for competing tasks before starting; verify any cited codex-review artifact actually exists on disk before treating the review as complete.",
+  "source": ".kiro/specs/direct-period-duckdb-migration/requirements.md and .kiro/agents/direct-period-duckdb-migration-loop.md",
+  "human_approval": {
+    "approved_by": "human-owner",
+    "approved_at": "2026-07-02T00:00:00.000Z",
+    "approval_text": "先处理daily_basic的新鲜度刷新",
+    "scope": "refresh daily_basic period=2021-2026 pointer to close observed drift"
+  },
+  "stop_after_done": true,
+  "claimed_by": "claude",
+  "claimed_at": "2026-07-02T04:22:23.778Z",
+  "inbox_path": ".ai-coord\\inbox\\claude\\T-direct-period-duckdb-migration-daily-basic-refresh-02.md",
+  "required_resources": [
+    "duckdb",
+    "source-duckdb/daily_basic-readonly",
+    "data-clean/daily_basic/period=2021-2026",
+    "query-entry/daily_basic",
+    "quanttrading/query-entry-router",
+    "artifact/direct-period-duckdb-migration/execution"
+  ],
+  "finished_by": "claude",
+  "finished_at": "2026-07-02T04:25:57.114Z",
+  "summary": "Refreshed daily_basic period=2021-2026 pointer to close freshness drift found during bar_daily task. New run direct-period-daily_basic-2021-2026-20260702t042237z: 5480967 rows (up from 5480212), all consistency checks passed. Corrected created_from_task attribution post-publish (metadata-only, reverified transparent). Routed smoke all_passed, freshness-by-date equal for 10 most recent dates. Full routed view = source (5480967=5480967), bidirectional EXCEPT 0/0. Source DuckDB OPEN_READONLY only, stat unchanged. bar_daily untouched. Execution artifact: .ai-coord/artifacts/direct-period-duckdb-migration/execution/direct-period-daily_basic-2021-2026-20260702t042237z.json (+.md).",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-02T04:25:57.115Z",
+  "review_status": "accepted",
+  "reviewed_by": "codex",
+  "reviewed_at": "2026-07-02T04:30:06.667Z",
+  "review_artifact": ".ai-coord/artifacts/direct-period-duckdb-migration/codex-review/T-direct-period-duckdb-migration-daily-basic-refresh-02-r1.md"
+}

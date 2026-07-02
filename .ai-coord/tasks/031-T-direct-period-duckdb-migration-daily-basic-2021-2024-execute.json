@@ -1,0 +1,69 @@
+{
+  "task_id": "T-direct-period-duckdb-migration-daily-basic-2021-2024-execute",
+  "spec": "direct-period-duckdb-migration",
+  "phase": "direct-period-execution",
+  "title": "Expand direct one-batch DuckDB-to-Parquet migration for daily_basic to cover full history (2021-2026)",
+  "status": "done",
+  "assignee": "claude",
+  "reviewer": "codex",
+  "requires": [
+    "duckdb",
+    "source-duckdb/daily_basic-readonly",
+    "data-clean/daily_basic/period=2021-2026",
+    "query-entry/daily_basic",
+    "quanttrading/query-entry-router",
+    "artifact/direct-period-duckdb-migration/execution"
+  ],
+  "forbidden": [
+    "source-duckdb-write",
+    "source-duckdb-ddl",
+    "source-duckdb-copy-target",
+    "drop-source-table",
+    "archive-source-table",
+    "source-ingestion-change",
+    "unreviewed-self-acceptance",
+    "codex-implementation"
+  ],
+  "allowed_writes": [
+    "data/staging/direct-period-duckdb-migration/daily_basic/period=2021-2026/**",
+    "data/clean/daily_basic/_versions/period=2021-2026/**",
+    "metadata/query-entry/daily_basic.json",
+    ".ai-coord/artifacts/direct-period-duckdb-migration/execution/**"
+  ],
+  "outputs": [
+    "data/staging/direct-period-duckdb-migration/daily_basic/period=2021-2026/<run-id>/part-*.parquet",
+    "data/clean/daily_basic/_versions/period=2021-2026/<run-id>/manifest.json",
+    "metadata/query-entry/daily_basic.json",
+    ".ai-coord/artifacts/direct-period-duckdb-migration/execution/<run-id>.json",
+    ".ai-coord/artifacts/direct-period-duckdb-migration/execution/<run-id>.md"
+  ],
+  "instructions": "Read .kiro/agents/direct-period-duckdb-migration-loop.md and .kiro/specs/direct-period-duckdb-migration/requirements.md first. Expand migration coverage from daily_basic/period=2025-2026 to the FULL table history: 2021-01-01 <= trade_date < 2027-01-01 (source table's actual min date is 2021-01-04; use the 2021-01-01 calendar-year boundary as window start, consistent with prior runs). This covers the entire daily_basic table (~5.48M rows), so after this switch the source-DuckDB fallback branch will only ever be hit for hypothetical trade dates outside 2021-2026, not for any currently existing row. Use C:/Workspace/Quanttrading/Quanttrading/data/quant.duckdb only with OPEN_READONLY. Preserve a rollback snapshot of the current metadata/query-entry/daily_basic.json pointer (period=2025-2026, accepted) before any switch. Execute the already validated playbook: inventory (expect ~5.48M rows total), contract alignment check, staged Parquet write for the combined 2021-2026 window, clean-version-manifest/v1 generation under partition_id period=2021-2026, source-vs-target consistency verification in the same real DuckDB engine (row count, date range, duplicate keys, bidirectional EXCEPT, ordered row checksum, null profile, provenance distribution), atomic pointer publish (temp+fsync when supported+rename), routed smoke (boundary/before/after/invalid/missing cases plus full/window counts vs source -- note the before-window branch will now be empty/near-empty since the window covers the whole table), AND an explicit freshness smoke comparing routed vs source row counts for the most recent trade dates. Roll back to the saved pointer state if any check fails. Do not write source DuckDB, do not drop/archive, do not change ingestion, do not touch the router module. Produce a complete execution JSON+MD artifact recording every step, then finish with finish-task using --agent claude so Codex can independently review. Coordination rule (from prior episodes): check .ai-coord/tasks for any competing task on the same pointer before starting, and if the review verdict later cites a review artifact path, verify it actually exists on disk before treating the review as trustworthy paperwork (Codex has twice recorded accepted verdicts citing artifact files that were never written).",
+  "source": ".kiro/specs/direct-period-duckdb-migration/requirements.md and .kiro/agents/direct-period-duckdb-migration-loop.md",
+  "human_approval": {
+    "approved_by": "human-owner",
+    "approved_at": "2026-07-02T00:00:00.000Z",
+    "approval_text": "继续推进2024年以及更早的，一次性全部移行完成",
+    "scope": "expand daily_basic direct one-batch migration from period=2025-2026 to full history period=2021-2026 (entire table)"
+  },
+  "stop_after_done": true,
+  "claimed_by": "claude",
+  "claimed_at": "2026-07-02T02:53:20.087Z",
+  "inbox_path": ".ai-coord\\inbox\\claude\\T-direct-period-duckdb-migration-daily-basic-2021-2024-execute.md",
+  "required_resources": [
+    "duckdb",
+    "source-duckdb/daily_basic-readonly",
+    "data-clean/daily_basic/period=2021-2026",
+    "query-entry/daily_basic",
+    "quanttrading/query-entry-router",
+    "artifact/direct-period-duckdb-migration/execution"
+  ],
+  "finished_by": "claude",
+  "finished_at": "2026-07-02T02:56:18.205Z",
+  "summary": "Expanded daily_basic production window from period=2025-2026 to period=2021-2026, covering the ENTIRE table (5480212 rows, 2021-01-04..2026-07-01). All consistency checks passed (row count, date range, dup keys, bidirectional EXCEPT, ordered checksum, null profile, provenance). Pointer atomically republished after rollback snapshot of the prior period=2025-2026 pointer. Routed smoke all_passed: inside-2021/2024/2026 route to parquet, boundary/invalid/missing cases correct, before-window fallback now empty on both sides (0=0) since window covers whole table, full/window routed counts equal source, bidirectional EXCEPT 0/0, freshness-by-date equal for 10 most recent trade dates. Source DuckDB opened OPEN_READONLY only; stat identical before/after. No drop/archive/source-write/router-change. No competing task detected. Execution artifact: .ai-coord/artifacts/direct-period-duckdb-migration/execution/direct-period-daily_basic-2021-2026-20260702t025423z.json (+.md).",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-02T02:56:18.206Z",
+  "review_status": "accepted",
+  "reviewed_by": "codex",
+  "reviewed_at": "2026-07-02T03:00:31.296Z",
+  "review_artifact": ".ai-coord/artifacts/direct-period-duckdb-migration/codex-review/T-direct-period-duckdb-migration-daily-basic-2021-2024-execute-r1.md"
+}

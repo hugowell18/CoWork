@@ -1,0 +1,40 @@
+{
+  "entry_version": "query-entry/v1",
+  "dataset": "moneyflow_daily",
+  "switch_grain": "dataset/period",
+  "status": "production-active-direct-period-full-history",
+  "created_from_task": "T-direct-period-duckdb-migration-bar-minute-moneyflow-execute",
+  "created_by": "claude",
+  "created_at": "2026-07-02T04:41:12.129Z",
+  "route": {
+    "dataset": "moneyflow_daily",
+    "partition_id": "period=full-history",
+    "window": {
+      "start": "2010-01-01",
+      "end": "2026-12-31",
+      "end_exclusive": "2027-01-01"
+    },
+    "target_manifest": "data/clean/moneyflow_daily/_versions/period=full-history/direct-period-moneyflow_daily-full-history-20260702t044047z/manifest.json",
+    "canonical_columns": [
+      "ts_code",
+      "trade_date",
+      "buy_lg_amount",
+      "sell_lg_amount",
+      "buy_elg_amount",
+      "sell_elg_amount",
+      "net_mf_amount",
+      "source",
+      "ingest_run_id"
+    ],
+    "source_fallback_required_outside_window": true
+  },
+  "source_fallback": {
+    "source_table": "main.moneyflow_daily",
+    "mode": "duckdb-readonly"
+  },
+  "provenance": {
+    "clean_manifest": "data/clean/moneyflow_daily/_versions/period=full-history/direct-period-moneyflow_daily-full-history-20260702t044047z/manifest.json",
+    "execution_artifact": ".ai-coord/artifacts/direct-period-duckdb-migration/execution/bar-minute-moneyflow-daily-20260702t044500z.json",
+    "rollback_snapshot": ".ai-coord/artifacts/direct-period-duckdb-migration/execution/direct-period-moneyflow_daily-full-history-20260702t044047z.pointer-rollback.json"
+  }
+}

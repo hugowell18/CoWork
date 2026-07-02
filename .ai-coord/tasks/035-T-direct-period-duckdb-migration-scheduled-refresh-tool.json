@@ -1,0 +1,69 @@
+{
+  "task_id": "T-direct-period-duckdb-migration-scheduled-refresh-tool",
+  "spec": "direct-period-duckdb-migration",
+  "phase": "direct-period-execution",
+  "title": "Build reusable per-dataset refresh tool and wire a periodic Codex-reviewed refresh routine",
+  "status": "done",
+  "assignee": "claude",
+  "reviewer": "codex",
+  "requires": [
+    "duckdb",
+    "quanttrading/query-entry-router",
+    "artifact/direct-period-duckdb-migration/execution"
+  ],
+  "forbidden": [
+    "source-duckdb-write",
+    "source-duckdb-ddl",
+    "source-duckdb-copy-target",
+    "drop-source-table",
+    "archive-source-table",
+    "source-ingestion-change",
+    "unreviewed-self-acceptance",
+    "codex-implementation",
+    "breaking-daily-basic-router-behavior",
+    "breaking-bar-daily-router-behavior",
+    "breaking-bar-minute-router-behavior",
+    "breaking-moneyflow-daily-router-behavior",
+    "skipping-codex-review-on-scheduled-runs"
+  ],
+  "allowed_writes": [
+    "tools/direct-period-duckdb-migration/**",
+    "data/staging/direct-period-duckdb-migration/**",
+    "data/clean/*/_versions/**",
+    "metadata/query-entry/*.json",
+    ".ai-coord/artifacts/direct-period-duckdb-migration/execution/**",
+    ".ai-coord/tasks/**"
+  ],
+  "outputs": [
+    "tools/direct-period-duckdb-migration/lib/dataset-registry.mjs",
+    "tools/direct-period-duckdb-migration/refresh-dataset.mjs",
+    ".ai-coord/artifacts/direct-period-duckdb-migration/execution/<run-id>.json",
+    ".ai-coord/artifacts/direct-period-duckdb-migration/execution/<run-id>.md"
+  ],
+  "instructions": "Root cause: every daily_basic/bar_daily/bar_minute/moneyflow_daily refresh so far has been a hand-written one-off script in the implementer's scratch directory (not committed), which is how the dangling provenance.execution_artifact bug slipped into the bar_minute/moneyflow_daily task (fixed in rework). Fix this at the tool level, then automate detection+refresh on a schedule while keeping the existing Claude-implements/Codex-reviews safety gate on every single refresh (do not skip review for scheduled runs). Build tools/direct-period-duckdb-migration/lib/dataset-registry.mjs: a shared config table for the four already-migrated datasets (daily_basic period.start=2021-01-01 srcTable=daily_basic keyCols=[ts_code,trade_date]; bar_daily period.start=2005-01-01 srcTable=bar_daily keyCols=[ts_code,trade_date]; bar_minute period.start=2022-01-01 srcTable=bar_minute keyCols=[ts_code,ts,freq] -- corrected key, contract's stated trade_time key is wrong; moneyflow_daily period.start=2010-01-01 srcTable=moneyflow_daily keyCols=[ts_code,trade_date]), each with canonicalColumns matching what the router already exports (import DAILY_BASIC_CANONICAL_COLUMNS etc. from the Quanttrading router via a relative path resolution, do not duplicate the column lists by hand where avoidable), numericColumns, and a generous fixed period.end_exclusive (use 2030-01-01 to avoid needing updates for years). Build tools/direct-period-duckdb-migration/refresh-dataset.mjs as a CLI: `node tools/direct-period-duckdb-migration/refresh-dataset.mjs --dataset <name> [--check-only] [--task-id <id>]`. With --check-only: open source DuckDB OPEN_READONLY, load the dataset's current query-entry pointer if present, compute routed-vs-source full-view row count and bidirectional EXCEPT count (reusing the router's build*RouteQuery for that dataset), print a JSON drift report to stdout, exit 0 always (no writes). Without --check-only: run the complete validated playbook for that dataset in one batch (rollback snapshot of current pointer, fresh inventory, staged Parquet COPY, clean-version-manifest/v1, source-vs-target consistency using the dataset's correct key columns for duplicate checks, atomic pointer publish with checkTargetFiles:true pre-validation, routed smoke including boundary/invalid/missing cases, freshness-by-date smoke for the 10 most recent trade dates, rollback on any failure) and, critically, write the execution artifact JSON+MD itself from within this same script using the SAME run-id used for the pointer's provenance.execution_artifact field -- no separate/redundant timestamp generation for the artifact path, eliminating the class of bug from the bar_minute/moneyflow_daily rework. Require --task-id (fail loudly if missing) and embed it as the pointer's created_from_task. Source DuckDB opened OPEN_READONLY only; never write/DDL/drop/archive/change ingestion. Prove the tool works end-to-end: run it for at least one already-migrated dataset (e.g. daily_basic) inside a properly claimed task per the existing loop (create a task card the same way this task itself was created, claim it, run --check-only first, then run a real refresh if there is any drift or to demonstrate the full path, produce its own execution artifact, finish-task for Codex review of THAT inner refresh too, folded into this same task's artifact narrative). After the tool is proven, wire a periodic routine using the CronCreate tool (available in this Claude Code session) that on a recurring schedule (recommend once daily, adjust if you have a better-informed cadence) prompts a fresh Claude Code session to: run `refresh-dataset.mjs --dataset <name> --check-only` for all four registered datasets, and for any dataset with nonzero drift, create a new direct-period-duckdb-migration task card following the exact same convention used in this session (task JSON with human_approval referencing this scheduled-refresh authorization, claim it, run refresh-dataset.mjs for real, write artifacts, finish-task so Codex reviews it -- the review gate must never be skipped even on scheduled runs), then report results. Record the exact CronCreate schedule/prompt used in the execution artifact for auditability (CronCreate output is not a repo file, so this artifact is the only durable record of what was scheduled). Produce a complete execution JSON+MD artifact, then finish with finish-task using --agent claude so Codex can independently review both the tool code and the scheduled-routine configuration. Coordination rule: check .ai-coord/tasks for competing tasks before starting; verify any cited codex-review artifact actually exists on disk before treating the review as complete.",
+  "source": ".kiro/specs/direct-period-duckdb-migration/requirements.md, .kiro/agents/direct-period-duckdb-migration-loop.md, and the bar_minute/moneyflow_daily rework lesson (dangling provenance.execution_artifact)",
+  "human_approval": {
+    "approved_by": "human-owner",
+    "approved_at": "2026-07-02T00:00:00.000Z",
+    "approval_text": "\"静态快照会漂移\"的问题解决掉; 定期刷新机制用哪种: Claude Code自带cron/routine (每次刷新都经过一致性校验和独立复审，保持现有安全门槛)",
+    "scope": "build a reusable per-dataset refresh tool and a Claude-Code-cron-driven periodic refresh routine that still goes through task-card creation and Codex review on every refresh"
+  },
+  "stop_after_done": true,
+  "claimed_by": "claude",
+  "claimed_at": "2026-07-02T05:14:21.973Z",
+  "inbox_path": ".ai-coord\\inbox\\claude\\T-direct-period-duckdb-migration-scheduled-refresh-tool.md",
+  "required_resources": [
+    "duckdb",
+    "quanttrading/query-entry-router",
+    "artifact/direct-period-duckdb-migration/execution"
+  ],
+  "finished_by": "claude",
+  "finished_at": "2026-07-02T05:16:41.923Z",
+  "summary": "Rework per Codex r1 changes-requested, both findings fixed: (1) recorded the exact literal CronCreate prompt text, cron expression (23 6 * * *), and timezone assumption (local, per tool contract) verbatim in both the JSON artifact (scheduled_routine.exact_cron_prompt_literal) and the MD artifact (code block) -- fully auditable now; (2) fixed refresh-dataset.mjs --check-only to always exit 0 on operational errors (was crashing with exit 1 on a corrupt pointer, outside any try/catch) -- wrapped in try/catch, emits structured {error, drift:{hasDrift:true}, note} report instead. Reproduced Codex's exact repro (corrupt JSON pointer in isolated --root) and confirmed the fix: now exits 0 with a structured report. Re-ran --check-only for all 4 real datasets (unchanged, all hasDrift:false) and the full router test suite (24/24 passed) -- no regression from the fix.",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-02T05:16:41.923Z",
+  "review_status": "accepted",
+  "reviewed_by": "codex",
+  "reviewed_at": "2026-07-02T05:18:17.436Z",
+  "review_artifact": ".ai-coord/artifacts/direct-period-duckdb-migration/codex-review/T-direct-period-duckdb-migration-scheduled-refresh-tool-r2.md"
+}

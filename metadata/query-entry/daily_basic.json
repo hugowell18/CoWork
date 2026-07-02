@@ -1,99 +1,20 @@
 {
-  "adapter": {
-    "activation": "openDuckDb(..., { queryEntry: { enabled: true, pointerPath, workspaceRoot } }) or QUERY_ENTRY_ROUTING with explicit pointer path",
-    "consumer_entry": "C:/Workspace/Quanttrading/Quanttrading/server/db/duckdb-client.mjs",
-    "router_module": "C:/Workspace/Quanttrading/Quanttrading/server/db/query-entry-router.mjs"
-  },
-  "created_at": "2026-07-01T09:11:57.146Z",
-  "created_from_task": "T-direct-period-duckdb-migration-daily-basic-2026-execute",
-  "dataset": "daily_basic",
   "entry_version": "query-entry/v1",
-  "quality": {
-    "consistency_artifact": ".ai-coord/artifacts/direct-period-duckdb-migration/execution/direct-period-daily_basic-2026-20260701t090645z.json",
-    "duplicate_key_count": 0,
-    "quality_artifact": ".ai-coord/artifacts/direct-period-duckdb-migration/execution/direct-period-daily_basic-2026-20260701t090645z.json",
-    "row_count": 454251,
-    "status": "quality-passed"
-  },
-  "rollback": {
-    "old_query_entry_pointer_state": {
-      "parsed_json": {
-        "accepted_artifacts": {
-          "adapter_proof": ".ai-coord/artifacts/formal-duckdb-migration/adapter-proof/adapter-proof-formal-duckdb-migration-2026-07-01t08-15-daily-basic-2026-05.json",
-          "clean_manifest": "data/clean/daily_basic/_versions/month=2026-05/pilot-plan-formal-duckdb-migration-2026-07-01t06-45-daily-basic-2026-05-month=2026-05/manifest.json",
-          "consumer_integration_proof": ".ai-coord/artifacts/formal-duckdb-migration/consumer-integration-proof/consumer-integration-proof-formal-duckdb-migration-2026-07-01t08-25-daily-basic-2026-05.json",
-          "route_proof": ".ai-coord/artifacts/formal-duckdb-migration/route-proof/route-proof-formal-duckdb-migration-2026-07-01t07-50-daily-basic-2026-05.json"
-        },
-        "adapter": {
-          "activation": "openDuckDb(..., { queryEntry: { enabled: true, pointerPath, workspaceRoot } }) or QUERY_ENTRY_ROUTING with explicit pointer path",
-          "consumer_entry": "C:/Workspace/Quanttrading/Quanttrading/server/db/duckdb-client.mjs",
-          "router_module": "C:/Workspace/Quanttrading/Quanttrading/server/db/query-entry-router.mjs"
-        },
-        "created_from_task": "T-formal-duckdb-migration-m7b3-fresh-switch-rollback",
-        "dataset": "daily_basic",
-        "entry_version": "query-entry/v1",
-        "quality": {
-          "consistency_artifact": ".ai-coord/artifacts/formal-duckdb-migration/consistency-verify/quality-gate-formal-duckdb-migration-2026-07-01t07-30-daily-basic-2026-05.json",
-          "duplicate_key_count": 0,
-          "quality_artifact": ".ai-coord/artifacts/formal-duckdb-migration/quality-gate/quality-gate-formal-duckdb-migration-2026-07-01t07-30-daily-basic-2026-05.json",
-          "row_count": 75018,
-          "status": "quality-passed"
-        },
-        "route": {
-          "canonical_columns": [
-            "ts_code",
-            "trade_date",
-            "turnover_rate",
-            "volume_ratio",
-            "pe",
-            "pb",
-            "ps",
-            "total_mv",
-            "circ_mv",
-            "source",
-            "ingest_run_id"
-          ],
-          "dataset": "daily_basic",
-          "partition_id": "month=2026-05",
-          "source_fallback_required_outside_window": true,
-          "target_files": [
-            {
-              "bytes": 2865909,
-              "path": "data/staging/formal-duckdb-migration/daily_basic/month=2026-05/pilot-plan-formal-duckdb-migration-2026-07-01t06-45-daily-basic-2026-05/part-000.parquet",
-              "row_count": 75018,
-              "sha256": "343f7588fd7a701c0d6fbc7d0eeb6a56d5bdcc8c08d0846a4166b0c123da3d14"
-            }
-          ],
-          "target_manifest": "data/clean/daily_basic/_versions/month=2026-05/pilot-plan-formal-duckdb-migration-2026-07-01t06-45-daily-basic-2026-05-month=2026-05/manifest.json",
-          "target_manifest_schema_version": "clean-version-manifest/v1",
-          "target_manifest_status": "quality-passed",
-          "window": {
-            "end": "2026-05-31",
-            "end_exclusive": "2026-06-01",
-            "excludes_source_max_date": true,
-            "source_max_date": "2026-06-29",
-            "start": "2026-05-01"
-          }
-        },
-        "source_fallback": {
-          "connection_mode": "OPEN_READONLY",
-          "db_path": "C:/Workspace/Quanttrading/Quanttrading/data/quant.duckdb",
-          "mode": "duckdb-open-readonly",
-          "table": "main.daily_basic"
-        },
-        "status": "production-candidate-pending-human-approved-switch",
-        "switch_grain": "dataset/window"
-      },
-      "path": "C:/Workspace/Cowork/metadata/query-entry/daily_basic.json",
-      "relative_path": "metadata/query-entry/daily_basic.json",
-      "sha256": "193bf1db4c462e62e057cfdd58a990aba7ff04752e971daf3351bc0939b251e1",
-      "state": "present"
-    },
-    "restore_action_if_old_absent": "delete metadata/query-entry/daily_basic.json after verifying it matches this run new_pointer_sha256",
-    "restore_action_if_old_present": "atomically write old_query_entry_pointer.parsed_json back to metadata/query-entry/daily_basic.json using same-directory temp file, fsync when supported, and rename",
-    "snapshot_artifact": ".ai-coord/artifacts/direct-period-duckdb-migration/execution/direct-period-daily_basic-2026-20260701t090645z.rollback-snapshot.json"
-  },
+  "dataset": "daily_basic",
+  "switch_grain": "dataset/period",
+  "status": "production-active-direct-period-full-history",
+  "created_from_task": "T-direct-period-duckdb-migration-scheduled-refresh-tool",
+  "created_by": "claude",
+  "created_at": "2026-07-02T05:06:11.610Z",
   "route": {
+    "dataset": "daily_basic",
+    "partition_id": "period=full-history",
+    "window": {
+      "start": "2021-01-01",
+      "end": "2029-12-31",
+      "end_exclusive": "2030-01-01"
+    },
+    "target_manifest": "data/clean/daily_basic/_versions/period=full-history/direct-period-daily_basic-refresh-20260702t050557z/manifest.json",
     "canonical_columns": [
       "ts_code",
       "trade_date",
@@ -107,35 +28,15 @@
       "source",
       "ingest_run_id"
     ],
-    "dataset": "daily_basic",
-    "partition_id": "period=2026",
-    "source_fallback_required_outside_window": true,
-    "target_files": [
-      {
-        "bytes": 16390594,
-        "path": "data/staging/direct-period-duckdb-migration/daily_basic/period=2026/direct-period-daily_basic-2026-20260701t090645z/part-000.parquet",
-        "row_count": 454251,
-        "sha256": "14f0a6072158cebefd5adaef612d6ab937bf1f04514ef2bdc96cc72cf18c6c8d"
-      }
-    ],
-    "target_manifest": "data/clean/daily_basic/_versions/period=2026/direct-period-daily_basic-2026-20260701t090645z/manifest.json",
-    "target_manifest_schema_version": "clean-version-manifest/v1",
-    "target_manifest_status": "quality-passed",
-    "window": {
-      "end": "2026-12-31",
-      "end_exclusive": "2027-01-01",
-      "requested_period": "2026",
-      "source_max_date": "2026-06-29",
-      "source_min_date": "2026-01-05",
-      "start": "2026-01-01"
-    }
+    "source_fallback_required_outside_window": true
   },
   "source_fallback": {
-    "connection_mode": "OPEN_READONLY",
-    "db_path": "C:/Workspace/Quanttrading/Quanttrading/data/quant.duckdb",
-    "mode": "duckdb-open-readonly",
-    "table": "main.daily_basic"
+    "source_table": "main.daily_basic",
+    "mode": "duckdb-readonly"
   },
-  "status": "production-active",
-  "switch_grain": "dataset/window"
+  "provenance": {
+    "clean_manifest": "data/clean/daily_basic/_versions/period=full-history/direct-period-daily_basic-refresh-20260702t050557z/manifest.json",
+    "execution_artifact": ".ai-coord/artifacts/direct-period-duckdb-migration/execution/direct-period-daily_basic-refresh-20260702t050557z.json",
+    "rollback_snapshot": ".ai-coord/artifacts/direct-period-duckdb-migration/execution/direct-period-daily_basic-refresh-20260702t050557z.pointer-rollback.json"
+  }
 }

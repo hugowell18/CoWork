@@ -1,0 +1,73 @@
+{
+  "task_id": "T-direct-period-duckdb-migration-bar-daily-execute",
+  "spec": "direct-period-duckdb-migration",
+  "phase": "direct-period-execution",
+  "title": "First non-daily_basic dataset: generalize router for bar_daily and migrate full history",
+  "status": "done",
+  "assignee": "claude",
+  "reviewer": "codex",
+  "requires": [
+    "duckdb",
+    "source-duckdb/bar_daily-readonly",
+    "data-clean/bar_daily/period=full-history",
+    "query-entry/bar_daily",
+    "quanttrading/query-entry-router",
+    "artifact/direct-period-duckdb-migration/execution"
+  ],
+  "forbidden": [
+    "source-duckdb-write",
+    "source-duckdb-ddl",
+    "source-duckdb-copy-target",
+    "drop-source-table",
+    "archive-source-table",
+    "source-ingestion-change",
+    "unreviewed-self-acceptance",
+    "codex-implementation",
+    "breaking-daily-basic-router-behavior"
+  ],
+  "allowed_writes": [
+    "data/staging/direct-period-duckdb-migration/bar_daily/**",
+    "data/clean/bar_daily/_versions/**",
+    "metadata/query-entry/bar_daily.json",
+    ".ai-coord/artifacts/direct-period-duckdb-migration/execution/**",
+    "C:/Workspace/Quanttrading/Quanttrading/server/db/query-entry-router.mjs",
+    "C:/Workspace/Quanttrading/Quanttrading/server/db/duckdb-client.mjs",
+    "C:/Workspace/Quanttrading/Quanttrading/tests/unit/query-entry-router.test.mjs"
+  ],
+  "outputs": [
+    "data/staging/direct-period-duckdb-migration/bar_daily/period=full-history/<run-id>/part-*.parquet",
+    "data/clean/bar_daily/_versions/period=full-history/<run-id>/manifest.json",
+    "metadata/query-entry/bar_daily.json",
+    ".ai-coord/artifacts/direct-period-duckdb-migration/execution/<run-id>.json",
+    ".ai-coord/artifacts/direct-period-duckdb-migration/execution/<run-id>.md"
+  ],
+  "instructions": "Read .kiro/agents/direct-period-duckdb-migration-loop.md, .kiro/specs/direct-period-duckdb-migration/requirements.md, and metadata/dataset-contracts/bar_daily.json first. Human owner explicitly approved generalizing the shared router (option: 'generalize existing router.mjs') over a duplicate-file or data-only-no-routing approach. The production router (C:/Workspace/Quanttrading/Quanttrading/server/db/query-entry-router.mjs) is currently hardcoded to dataset='daily_basic' only. Generalize it to support bar_daily WITHOUT changing daily_basic's existing behavior or public API: keep normalizeDailyBasicPointer/classifyDailyBasicTradeDate/buildDailyBasicRouteQuery/DAILY_BASIC_CANONICAL_COLUMNS exported with identical signatures and behavior (the existing tests/unit/query-entry-router.test.mjs 8 tests must still pass unmodified), refactor the internals to be parametrized by dataset name + canonical columns + source table, and add new analogous exports (e.g. BAR_DAILY_CANONICAL_COLUMNS, normalizeBarDailyPointer, classifyBarDailyTradeDate, buildBarDailyRouteQuery) plus wire an equivalent client.queryEntry.barDaily path into duckdb-client.mjs's maybeInstallQueryEntryRouting (accept a queryEntry.dataset option, default 'daily_basic' for full backward compatibility). Add new unit tests mirroring the existing daily_basic ones for bar_daily coverage (inside-window routes to parquet, outside-window routes to source, cross-window split, invalid/missing date, quality-gate rejection) and run the full existing + new test suite to confirm nothing regressed. bar_daily canonical columns from the live source schema: ts_code, trade_date, open, high, low, close, pre_close, pct_chg, volume, amount, adj_factor, source, ingest_run_id (exclude updated_at -- it is not part of daily_basic's canonical set either and is a mutable audit column, not immutable content). Once the router is generalized and tested, execute the SAME validated migration playbook against C:/Workspace/Quanttrading/Quanttrading/data/quant.duckdb table bar_daily, OPEN_READONLY only, for the FULL table history (source spans 2005-01-04 to present, ~12.47M rows -- there is no existing bar_daily pointer to roll back from, so the rollback snapshot will record old_pointer_existed=false): inventory, staged Parquet write, clean-version-manifest/v1 generation, source-vs-target consistency verification (row count, date range, duplicate keys, bidirectional EXCEPT, ordered row checksum, null profile, provenance distribution), atomic publish of a NEW metadata/query-entry/bar_daily.json pointer (temp+fsync when supported+rename), routed smoke (boundary/before/after/invalid/missing cases plus full-window routed counts vs source), and freshness smoke comparing routed vs source row counts for the most recent trade dates. Roll back (delete the new pointer) if any check fails. Do not write source DuckDB, do not drop/archive, do not change ingestion. Note from metadata/dataset-contracts/bar_daily.json: this dataset was earlier assessed migration.candidate=false ('all-history hot access is acceptable for daily bars') under the data-weight-control spec's own hot/cold layering heuristic -- that is a different mechanism's recommendation, not a blocker for this explicit human-directed direct-period migration, but note it transparently in the execution artifact. Produce a complete execution JSON+MD artifact, then finish with finish-task using --agent claude so Codex can independently review. Coordination rule (from prior episodes): check .ai-coord/tasks for any competing task before starting; do not trust a Codex review verdict as fully documented until the cited review-artifact file is confirmed to exist on disk.",
+  "source": ".kiro/specs/direct-period-duckdb-migration/requirements.md, .kiro/agents/direct-period-duckdb-migration-loop.md, and metadata/dataset-contracts/bar_daily.json",
+  "human_approval": {
+    "approved_by": "human-owner",
+    "approved_at": "2026-07-02T00:00:00.000Z",
+    "approval_text": "继续推进其他数据集，一个一个来，先bar_daily; 路由器改造方案: 通用化现有router.mjs",
+    "scope": "generalize query-entry-router for a second dataset and migrate bar_daily full history"
+  },
+  "stop_after_done": true,
+  "claimed_by": "claude",
+  "claimed_at": "2026-07-02T04:06:22.924Z",
+  "inbox_path": ".ai-coord\\inbox\\claude\\T-direct-period-duckdb-migration-bar-daily-execute.md",
+  "required_resources": [
+    "duckdb",
+    "source-duckdb/bar_daily-readonly",
+    "data-clean/bar_daily/period=full-history",
+    "query-entry/bar_daily",
+    "quanttrading/query-entry-router",
+    "artifact/direct-period-duckdb-migration/execution"
+  ],
+  "finished_by": "claude",
+  "finished_at": "2026-07-02T04:16:43.619Z",
+  "summary": "Generalized query-entry-router.mjs to support multiple datasets (dataset-parametrized normalizeDatasetPointer/classifyDatasetTradeDate/planDatasetRoutes/buildDatasetRouteQuery internals), preserving 100% of daily_basic's existing exported API/behavior (8 original tests unchanged and passing) while adding BAR_DAILY_CANONICAL_COLUMNS/normalizeBarDailyPointer/classifyBarDailyTradeDate/buildBarDailyRouteQuery plus duckdb-client.mjs queryEntry.dataset option (default daily_basic, new barDaily key). Added 7 new bar_daily unit tests; full suite 15/15 passed. Then migrated bar_daily FULL HISTORY (12472073 rows, 2005-01-04..2026-07-01) in one batch: all consistency checks passed (row count, date range, dup keys, bidirectional EXCEPT, ordered checksum, null profile, provenance), new metadata/query-entry/bar_daily.json published (first switch for this dataset, no prior pointer existed), routed smoke all_passed including freshness-by-date for 10 most recent trade dates. Source DuckDB opened OPEN_READONLY only; stat identical before/after. Noted transparently: bar_daily contract records migration.candidate=false under data-weight-control's separate hot/cold heuristic -- not a blocker for this explicit human-directed migration. Also noted: daily_basic's separately-migrated period=2021-2026 pointer has drifted slightly stale again from ongoing source data corrections (unrelated to this task -- recent-date counts still match exactly, only older-window rows drifted; isolated file paths confirm no interference). Execution artifact: .ai-coord/artifacts/direct-period-duckdb-migration/execution/direct-period-bar_daily-full-history-20260702t041308z.json (+.md).",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-02T04:16:43.620Z",
+  "review_status": "accepted",
+  "reviewed_by": "codex",
+  "reviewed_at": "2026-07-02T04:19:44.365Z",
+  "review_artifact": ".ai-coord/artifacts/direct-period-duckdb-migration/codex-review/T-direct-period-duckdb-migration-bar-daily-execute-r1.md"
+}

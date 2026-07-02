@@ -1,0 +1,44 @@
+{
+  "entry_version": "query-entry/v1",
+  "dataset": "bar_daily",
+  "switch_grain": "dataset/period",
+  "status": "production-active-direct-period-full-history",
+  "created_from_task": "T-direct-period-duckdb-migration-bar-daily-execute",
+  "created_by": "claude",
+  "created_at": "2026-07-02T04:13:44.661Z",
+  "route": {
+    "dataset": "bar_daily",
+    "partition_id": "period=full-history",
+    "window": {
+      "start": "2005-01-01",
+      "end": "2026-12-31",
+      "end_exclusive": "2027-01-01"
+    },
+    "target_manifest": "data/clean/bar_daily/_versions/period=full-history/direct-period-bar_daily-full-history-20260702t041308z/manifest.json",
+    "canonical_columns": [
+      "ts_code",
+      "trade_date",
+      "open",
+      "high",
+      "low",
+      "close",
+      "pre_close",
+      "pct_chg",
+      "volume",
+      "amount",
+      "adj_factor",
+      "source",
+      "ingest_run_id"
+    ],
+    "source_fallback_required_outside_window": true
+  },
+  "source_fallback": {
+    "source_table": "main.bar_daily",
+    "mode": "duckdb-readonly"
+  },
+  "provenance": {
+    "clean_manifest": "data/clean/bar_daily/_versions/period=full-history/direct-period-bar_daily-full-history-20260702t041308z/manifest.json",
+    "execution_artifact": ".ai-coord/artifacts/direct-period-duckdb-migration/execution/direct-period-bar_daily-full-history-20260702t041308z.json",
+    "rollback_snapshot": ".ai-coord/artifacts/direct-period-duckdb-migration/execution/direct-period-bar_daily-full-history-20260702t041308z.pointer-rollback.json"
+  }
+}

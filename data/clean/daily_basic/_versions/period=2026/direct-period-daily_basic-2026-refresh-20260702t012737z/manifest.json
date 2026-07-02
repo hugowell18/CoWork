@@ -1,0 +1,159 @@
+{
+  "checksums": {
+    "parquet_file_sha256": "e4b2fe32bec22a2ce8ae7a1b3b186149206fd56b7724ca0a3a6e3e92feb68062",
+    "source_key_set_sha256": "7a3cc840bec04bfb8992163396be346a512df0bffcdc1885c4f278b423e58ec8",
+    "source_ordered_row_sha256": "afbf5039bdc1c888eddf8bac6f73bbe8ba86fb175bb4eb1a6b4c103730d5067f",
+    "target_key_set_sha256": "7a3cc840bec04bfb8992163396be346a512df0bffcdc1885c4f278b423e58ec8",
+    "target_ordered_row_sha256": "afbf5039bdc1c888eddf8bac6f73bbe8ba86fb175bb4eb1a6b4c103730d5067f"
+  },
+  "consistency_checks": {
+    "all_passed": true,
+    "date_range_equal": true,
+    "duplicate_keys_zero": true,
+    "logical_key_set_equal": true,
+    "null_profile_equal": true,
+    "numeric_profile_equal": true,
+    "ordered_row_checksum_equal": true,
+    "provenance_equal": true,
+    "row_count": 496469,
+    "row_count_equal": true,
+    "source_minus_target_zero": true,
+    "target_minus_source_zero": true
+  },
+  "contract": {
+    "contract_path": "metadata/dataset-contracts/daily_basic.json",
+    "date_column": "trade_date",
+    "logical_key": [
+      "ts_code",
+      "trade_date"
+    ],
+    "numeric_columns": [
+      "turnover_rate",
+      "volume_ratio",
+      "pe",
+      "pb",
+      "ps",
+      "total_mv",
+      "circ_mv"
+    ],
+    "provenance_columns": [
+      "source",
+      "ingest_run_id"
+    ],
+    "selected_columns": [
+      "ts_code",
+      "trade_date",
+      "turnover_rate",
+      "volume_ratio",
+      "pe",
+      "pb",
+      "ps",
+      "total_mv",
+      "circ_mv",
+      "source",
+      "ingest_run_id"
+    ]
+  },
+  "created_at": "2026-07-02T01:27:42.148Z",
+  "created_by": "claude",
+  "dataset": "daily_basic",
+  "date_range": {
+    "from": "2026-01-05",
+    "to": "2026-07-01"
+  },
+  "duplicate_key_count": 0,
+  "expected_row_count": 496469,
+  "manifest_path": "data/clean/daily_basic/_versions/period=2026/direct-period-daily_basic-2026-refresh-20260702t012737z/manifest.json",
+  "null_profile": {
+    "source": {
+      "circ_mv": 0,
+      "ingest_run_id": 0,
+      "pb": 291,
+      "pe": 10831,
+      "ps": 9,
+      "source": 0,
+      "total_mv": 0,
+      "trade_date": 0,
+      "ts_code": 0,
+      "turnover_rate": 0,
+      "volume_ratio": 0
+    },
+    "target": {
+      "circ_mv": 0,
+      "ingest_run_id": 0,
+      "pb": 291,
+      "pe": 10831,
+      "ps": 9,
+      "source": 0,
+      "total_mv": 0,
+      "trade_date": 0,
+      "ts_code": 0,
+      "turnover_rate": 0,
+      "volume_ratio": 0
+    }
+  },
+  "partition": {
+    "column": "trade_date",
+    "end_exclusive": "2027-01-01",
+    "start": "2026-01-01",
+    "type": "period",
+    "value": "2026"
+  },
+  "partition_id": "period=2026",
+  "provenance": {
+    "columns": [
+      "source",
+      "ingest_run_id"
+    ],
+    "no_fabricated_ingest_provenance": true,
+    "source": {
+      "ingest_run_id_distinct": 1,
+      "source_distinct": [
+        {
+          "row_count": 496469,
+          "value": "cache:daily_basic_csv"
+        }
+      ]
+    },
+    "target": {
+      "ingest_run_id_distinct": 1,
+      "source_distinct": [
+        {
+          "row_count": 496469,
+          "value": "cache:daily_basic_csv"
+        }
+      ]
+    }
+  },
+  "row_count": 496469,
+  "schema_version": "clean-version-manifest/v1",
+  "source": {
+    "connection_mode": "OPEN_READONLY",
+    "db_alias": "quanttrading:data/quant.duckdb",
+    "db_file_size_bytes": 2536779776,
+    "db_last_write_time": "2026-07-02T01:26:28.494Z",
+    "db_observed_path": "C:/Workspace/Quanttrading/Quanttrading/data/quant.duckdb",
+    "duckdb_version": "v1.4.4",
+    "source_window_predicate": "trade_date >= DATE '2026-01-01' AND trade_date < DATE '2027-01-01'",
+    "table": "daily_basic"
+  },
+  "spec": "direct-period-duckdb-migration",
+  "status": "quality-passed",
+  "target_files": [
+    {
+      "absolute_path": "C:/Workspace/Cowork-DuckDB/data/staging/direct-period-duckdb-migration/daily_basic/period=2026/direct-period-daily_basic-2026-refresh-20260702t012737z/part-000.parquet",
+      "bytes": 17890934,
+      "path": "data/staging/direct-period-duckdb-migration/daily_basic/period=2026/direct-period-daily_basic-2026-refresh-20260702t012737z/part-000.parquet",
+      "row_count": 496469,
+      "sha256": "e4b2fe32bec22a2ce8ae7a1b3b186149206fd56b7724ca0a3a6e3e92feb68062"
+    }
+  ],
+  "task_id": "T-direct-period-duckdb-migration-daily-basic-2026-refresh-01",
+  "version_id": "direct-period-daily_basic-2026-refresh-20260702t012737z",
+  "version_path": "data/clean/daily_basic/_versions/period=2026/direct-period-daily_basic-2026-refresh-20260702t012737z",
+  "window": {
+    "end": "2026-12-31",
+    "end_exclusive": "2027-01-01",
+    "start": "2026-01-01"
+  }
+}

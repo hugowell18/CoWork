@@ -1,0 +1,46 @@
+{
+  "entry_version": "query-entry/v1",
+  "dataset": "bar_minute",
+  "switch_grain": "dataset/period",
+  "status": "production-active-direct-period-full-history",
+  "created_from_task": "T-direct-period-duckdb-migration-bar-minute-moneyflow-execute",
+  "created_by": "claude",
+  "created_at": "2026-07-02T04:40:44.153Z",
+  "route": {
+    "dataset": "bar_minute",
+    "partition_id": "period=full-history",
+    "window": {
+      "start": "2022-01-01",
+      "end": "2026-12-31",
+      "end_exclusive": "2027-01-01"
+    },
+    "target_manifest": "data/clean/bar_minute/_versions/period=full-history/direct-period-bar_minute-full-history-20260702t044030z/manifest.json",
+    "canonical_columns": [
+      "ts_code",
+      "ts",
+      "trade_date",
+      "freq",
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume",
+      "amount",
+      "source",
+      "source_detail",
+      "raw_count",
+      "quality_status",
+      "ingest_run_id"
+    ],
+    "source_fallback_required_outside_window": true
+  },
+  "source_fallback": {
+    "source_table": "main.bar_minute",
+    "mode": "duckdb-readonly"
+  },
+  "provenance": {
+    "clean_manifest": "data/clean/bar_minute/_versions/period=full-history/direct-period-bar_minute-full-history-20260702t044030z/manifest.json",
+    "execution_artifact": ".ai-coord/artifacts/direct-period-duckdb-migration/execution/bar-minute-moneyflow-daily-20260702t044500z.json",
+    "rollback_snapshot": ".ai-coord/artifacts/direct-period-duckdb-migration/execution/direct-period-bar_minute-full-history-20260702t044030z.pointer-rollback.json"
+  }
+}

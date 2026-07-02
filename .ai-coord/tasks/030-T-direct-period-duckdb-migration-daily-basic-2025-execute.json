@@ -1,0 +1,69 @@
+{
+  "task_id": "T-direct-period-duckdb-migration-daily-basic-2025-execute",
+  "spec": "direct-period-duckdb-migration",
+  "phase": "direct-period-execution",
+  "title": "Expand direct one-batch DuckDB-to-Parquet migration for daily_basic to include 2025",
+  "status": "done",
+  "assignee": "claude",
+  "reviewer": "codex",
+  "requires": [
+    "duckdb",
+    "source-duckdb/daily_basic-readonly",
+    "data-clean/daily_basic/period=2025-2026",
+    "query-entry/daily_basic",
+    "quanttrading/query-entry-router",
+    "artifact/direct-period-duckdb-migration/execution"
+  ],
+  "forbidden": [
+    "source-duckdb-write",
+    "source-duckdb-ddl",
+    "source-duckdb-copy-target",
+    "drop-source-table",
+    "archive-source-table",
+    "source-ingestion-change",
+    "unreviewed-self-acceptance",
+    "codex-implementation"
+  ],
+  "allowed_writes": [
+    "data/staging/direct-period-duckdb-migration/daily_basic/period=2025-2026/**",
+    "data/clean/daily_basic/_versions/period=2025-2026/**",
+    "metadata/query-entry/daily_basic.json",
+    ".ai-coord/artifacts/direct-period-duckdb-migration/execution/**"
+  ],
+  "outputs": [
+    "data/staging/direct-period-duckdb-migration/daily_basic/period=2025-2026/<run-id>/part-*.parquet",
+    "data/clean/daily_basic/_versions/period=2025-2026/<run-id>/manifest.json",
+    "metadata/query-entry/daily_basic.json",
+    ".ai-coord/artifacts/direct-period-duckdb-migration/execution/<run-id>.json",
+    ".ai-coord/artifacts/direct-period-duckdb-migration/execution/<run-id>.md"
+  ],
+  "instructions": "Read .kiro/agents/direct-period-duckdb-migration-loop.md and .kiro/specs/direct-period-duckdb-migration/requirements.md first. Expand migration coverage from daily_basic/2026-only to daily_basic/2025-01-01 <= trade_date < 2027-01-01 (2025 + 2026 combined) in one end-to-end batch. The production router (query-entry-router.mjs) only supports a single contiguous window per pointer, so this must widen the window rather than stack a second manifest, matching the precedent already used to grow the pilot (2026-05) into the full 2026 year. Use C:/Workspace/Quanttrading/Quanttrading/data/quant.duckdb only with OPEN_READONLY. Preserve a rollback snapshot of the current metadata/query-entry/daily_basic.json pointer (the accepted task-029 lineage, most recently refreshed) before any switch. Execute the already validated playbook: inventory (expect roughly 1.56M rows for the combined window), contract alignment check, staged Parquet write for the combined window, clean-version-manifest/v1 generation under partition_id period=2025-2026, source-vs-target consistency verification in the same real DuckDB engine (row count, date range, duplicate keys, bidirectional EXCEPT, ordered row checksum, null profile, provenance distribution), atomic pointer publish (temp+fsync when supported+rename), routed smoke (boundary/before/after/invalid/missing cases plus full/window/outside-window counts vs source), AND an explicit freshness smoke comparing routed vs source row counts for the most recent trade dates. Roll back to the saved pointer state if any check fails. Do not write source DuckDB, do not drop/archive, do not change ingestion, do not touch the router module (already generalized, no code changes needed). Produce a complete execution JSON+MD artifact recording every step, then finish with finish-task using --agent claude so Codex can independently review. IMPORTANT coordination rule learned from the prior refresh episode: do not perform this task's production pointer switch more than once, and if a duplicate/competing task or process is discovered touching the same pointer, stop and let only the first-claimed task perform the write.",
+  "source": ".kiro/specs/direct-period-duckdb-migration/requirements.md and .kiro/agents/direct-period-duckdb-migration-loop.md",
+  "human_approval": {
+    "approved_by": "human-owner",
+    "approved_at": "2026-07-02T00:00:00.000Z",
+    "approval_text": "那你开始之前的继续执行DB migration。目前你已经完成了2026年的数据移行。下一步开始整个2025年的移行，codex已经在后台轮询你的结果了",
+    "scope": "expand daily_basic direct one-batch migration from 2026-only to combined 2025-2026"
+  },
+  "stop_after_done": true,
+  "claimed_by": "claude",
+  "claimed_at": "2026-07-02T02:37:37.795Z",
+  "inbox_path": ".ai-coord\\inbox\\claude\\T-direct-period-duckdb-migration-daily-basic-2025-execute.md",
+  "required_resources": [
+    "duckdb",
+    "source-duckdb/daily_basic-readonly",
+    "data-clean/daily_basic/period=2025-2026",
+    "query-entry/daily_basic",
+    "quanttrading/query-entry-router",
+    "artifact/direct-period-duckdb-migration/execution"
+  ],
+  "finished_by": "claude",
+  "finished_at": "2026-07-02T02:40:06.135Z",
+  "summary": "Expanded daily_basic production window from period=2026 to period=2025-2026 in one end-to-end batch. New run direct-period-daily_basic-2025-2026-20260702t023900z: 1564137 rows (2025-01-02..2026-07-01), all consistency checks passed (row count, date range, dup keys, bidirectional EXCEPT, ordered checksum, null profile, provenance). Pointer atomically republished after rollback snapshot of the prior period=2026 pointer. Routed smoke all_passed: inside-2025/inside-2026 route to parquet, before-2025/after-window route to source, boundary and invalid/missing cases correct, full/window/before-window routed counts equal source, bidirectional EXCEPT 0/0, freshness-by-date check equal for the 10 most recent trade dates. Source DuckDB opened OPEN_READONLY only; stat identical before/after. No drop/archive/source-write/router-change. No competing task detected before/during this run. Execution artifact: .ai-coord/artifacts/direct-period-duckdb-migration/execution/direct-period-daily_basic-2025-2026-20260702t023900z.json (+.md).",
+  "implementation_status": "done",
+  "implementation_done_at": "2026-07-02T02:40:06.135Z",
+  "review_status": "accepted",
+  "reviewed_by": "codex",
+  "reviewed_at": "2026-07-02T02:44:58.412Z",
+  "review_artifact": ".ai-coord/artifacts/direct-period-duckdb-migration/codex-review/T-direct-period-duckdb-migration-daily-basic-2025-execute-r1.md"
+}

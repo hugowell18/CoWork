@@ -1,0 +1,159 @@
+{
+  "schema_version": "clean-version-manifest/v1",
+  "dataset": "daily_basic",
+  "partition_id": "period=2021-2026",
+  "partition": {
+    "type": "period",
+    "column": "trade_date",
+    "value": "2021-2026",
+    "start": "2021-01-01",
+    "end_exclusive": "2027-01-01"
+  },
+  "version_id": "direct-period-daily_basic-2021-2026-20260702t042237z",
+  "version_path": "data/clean/daily_basic/_versions/period=2021-2026/direct-period-daily_basic-2021-2026-20260702t042237z",
+  "manifest_path": "data/clean/daily_basic/_versions/period=2021-2026/direct-period-daily_basic-2021-2026-20260702t042237z/manifest.json",
+  "created_at": "2026-07-02T04:22:51.091Z",
+  "created_by": "claude",
+  "status": "quality-passed",
+  "spec": "direct-period-duckdb-migration",
+  "expands": "T-direct-period-duckdb-migration-daily-basic-2025-execute (period=2025-2026 -> period=2021-2026, full table history)",
+  "source": {
+    "db_alias": "quanttrading:data/quant.duckdb",
+    "db_observed_path": "C:/Workspace/Quanttrading/Quanttrading/data/quant.duckdb",
+    "table": "daily_basic",
+    "connection_mode": "OPEN_READONLY",
+    "duckdb_version": "v1.4.4",
+    "source_window_predicate": "trade_date >= DATE '2021-01-01' AND trade_date < DATE '2027-01-01'",
+    "db_file_size_bytes": 2536779776,
+    "db_last_write_time": "2026-07-02T03:28:00.255Z"
+  },
+  "window": {
+    "start": "2021-01-01",
+    "end": "2026-12-31",
+    "end_exclusive": "2027-01-01"
+  },
+  "row_count": 5480967,
+  "expected_row_count": 5480967,
+  "duplicate_key_count": 0,
+  "date_range": {
+    "from": "2021-01-04",
+    "to": "2026-07-01"
+  },
+  "contract": {
+    "contract_path": "metadata/dataset-contracts/daily_basic.json",
+    "logical_key": [
+      "ts_code",
+      "trade_date"
+    ],
+    "date_column": "trade_date",
+    "selected_columns": [
+      "ts_code",
+      "trade_date",
+      "turnover_rate",
+      "volume_ratio",
+      "pe",
+      "pb",
+      "ps",
+      "total_mv",
+      "circ_mv",
+      "source",
+      "ingest_run_id"
+    ],
+    "numeric_columns": [
+      "turnover_rate",
+      "volume_ratio",
+      "pe",
+      "pb",
+      "ps",
+      "total_mv",
+      "circ_mv"
+    ],
+    "provenance_columns": [
+      "source",
+      "ingest_run_id"
+    ]
+  },
+  "checksums": {
+    "source_ordered_row_sha256": "b1ebaa02bd6c3e34641793182f544fbb",
+    "target_ordered_row_sha256": "b1ebaa02bd6c3e34641793182f544fbb",
+    "parquet_file_sha256": "59c0949a094c8abfc2e7949f74f163aa44aa17b1dd2ac23aae30f85a93285be0"
+  },
+  "null_profile": {
+    "source": {
+      "turnover_rate": 0,
+      "volume_ratio": 0,
+      "pe": 12170,
+      "pb": 313,
+      "ps": 11,
+      "total_mv": 0,
+      "circ_mv": 0,
+      "source": 0,
+      "ingest_run_id": 0
+    },
+    "target": {
+      "turnover_rate": 0,
+      "volume_ratio": 0,
+      "pe": 12170,
+      "pb": 313,
+      "ps": 11,
+      "total_mv": 0,
+      "circ_mv": 0,
+      "source": 0,
+      "ingest_run_id": 0
+    }
+  },
+  "provenance": {
+    "columns": [
+      "source",
+      "ingest_run_id"
+    ],
+    "source": {
+      "source_distinct": [
+        {
+          "value": "cache:daily_basic_csv",
+          "row_count": 5475777
+        },
+        {
+          "value": "tushare:by_date",
+          "row_count": 5190
+        }
+      ],
+      "ingest_run_id_distinct": 2
+    },
+    "target": {
+      "source_distinct": [
+        {
+          "value": "cache:daily_basic_csv",
+          "row_count": 5475777
+        },
+        {
+          "value": "tushare:by_date",
+          "row_count": 5190
+        }
+      ],
+      "ingest_run_id_distinct": 2
+    },
+    "no_fabricated_ingest_provenance": true
+  },
+  "target_files": [
+    {
+      "path": "data/staging/direct-period-duckdb-migration/daily_basic/period=2021-2026/direct-period-daily_basic-2021-2026-20260702t042237z/part-000.parquet",
+      "absolute_path": "C:/Workspace/Cowork-DuckDB/data/staging/direct-period-duckdb-migration/daily_basic/period=2021-2026/direct-period-daily_basic-2021-2026-20260702t042237z/part-000.parquet",
+      "bytes": 186654260,
+      "sha256": "59c0949a094c8abfc2e7949f74f163aa44aa17b1dd2ac23aae30f85a93285be0",
+      "row_count": 5480967
+    }
+  ],
+  "consistency_checks": {
+    "row_count_equal": true,
+    "row_count": 5480967,
+    "date_range_equal": true,
+    "duplicate_keys_zero": true,
+    "source_minus_target_zero": true,
+    "target_minus_source_zero": true,
+    "ordered_row_checksum_equal": true,
+    "null_profile_equal": true,
+    "provenance_equal": true,
+    "all_passed": true
+  }
+}
